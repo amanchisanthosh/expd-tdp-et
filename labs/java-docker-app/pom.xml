@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>java-docker-app</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <mainClass>com.example.App</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+<!-- <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.3.0</version>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        <mainClass>com.example.Main</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+Replace com.example.Main with your actual main class.
+
+2. Rebuild the JAR in Docker
+Your Dockerfile’s build stage will now produce a JAR with a manifest:
+
+Dockerfile
+
+Copy code
+RUN mvn clean package -DskipTests
+3. Run with java -jar
+Since the manifest now contains Main-Class, your runtime stage works:
+
+Dockerfile
+
+Copy code
+ENTRYPOINT ["java", "-jar", "app.jar"]
+𐂡 Tip: If you’re building a Spring Boot app, you don’t need to manually set the manifest — use the spring-boot-maven-plugin and it will create an executable JAR automatically.
+
+If you want, I can give you a Dockerfile tweak that builds a Spring Boot–style fat JAR so you never hit the "no manifest" problem again.
+Do you want me to prepare that?
+
+ -->
