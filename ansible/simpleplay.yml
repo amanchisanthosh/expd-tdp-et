@@ -1,0 +1,13 @@
+- name: infra users creation
+  hosts: prod
+  vars_files:
+    - userlistfile
+  tasks:
+    - name: infra users creation
+      ansible.builtin.user:
+        name: "{{ item.uname }}"  
+        uid: "{{ item.uid }}"
+        comment: "Infra-user"
+        password: "{{ 'redhat123' | password_hash('sha512')}}"
+        state: present
+      loop: "{{ users }}" 

@@ -1,0 +1,13 @@
+- name: users create
+  hosts: node1.example.com
+  vars_files:
+    - userfile-ext
+  tasks:
+    - name: users creation
+      ansible.builtin.user:
+        name: "{{ item }}"  
+        state: present
+      loop: 
+        - user30
+        - user31
+        - user32

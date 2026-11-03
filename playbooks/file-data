@@ -1,0 +1,3 @@
+My hostname is "{{ ansible_hostname }}"
+My FQDN is "{{ ansible_fqdn }}"
+

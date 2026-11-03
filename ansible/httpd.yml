@@ -1,0 +1,34 @@
+- name: httpd playbook
+  hosts: dev, test
+  tasks:
+  - name: copy httpd conf
+    ansible.builtin.copy:
+      src: httpd.conf
+      dest: /mnt/
+  - name: install httpd and firewall
+    ansible.builtin.yum:
+      name: 
+        - httpd
+        - firewalld
+      state: present
+  - name: start httpd service
+    ansible.builtin.service:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: start firewalld
+    ansible.builtin.service:
+      name: firewalld
+      state: started
+      enabled: yes
+  - name: open port 80 for web service
+    ansible.posix.firewalld:
+      service: http
+      state: enabled
+      permanent: true 
+    notify: reload firewall 
+
+  handlers:
+    - name: reload firewall
+      ansible.builtin.command: firewall-cmd --reload
+

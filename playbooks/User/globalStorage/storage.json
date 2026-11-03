@@ -1,0 +1,144 @@
+{
+    "telemetry.sqmId": "",
+    "telemetry.machineId": "620f384558bb9132e32719e86cd7ab18c47b14d1940af120a75e7f708f4fa1ed",
+    "telemetry.devDeviceId": "ab4d8c40-e6bb-42ee-a99a-409f7ec5c3b8",
+    "backupWorkspaces": {
+        "workspaces": [],
+        "folders": [
+            {
+                "folderUri": "file:///home/student/playbooks"
+            }
+        ],
+        "emptyWindows": []
+    },
+    "windowControlHeight": 35,
+    "profileAssociations": {
+        "workspaces": {
+            "file:///home/student/playbooks": "__default__profile__"
+        },
+        "emptyWindows": {}
+    },
+    "theme": "vs-dark",
+    "themeBackground": "#121314",
+    "windowSplash": {
+        "zoomLevel": 0,
+        "baseTheme": "vs-dark",
+        "colorInfo": {
+            "foreground": "#bfbfbf",
+            "background": "#121314",
+            "editorBackground": "#121314",
+            "titleBarBackground": "#191a1b",
+            "titleBarInactiveBackground": "#121314",
+            "titleBarBorder": "#2a2b2c",
+            "activityBarBackground": "#191a1b",
+            "activityBarBorder": "#2a2b2c",
+            "modernActivityBarBackground": "#191a1b",
+            "modernActivityBarInactiveBackground": "#191a1b",
+            "modernActivityBarBorder": "#252526",
+            "modernPanelBorder": "#2a2b2c",
+            "modernUIShellBackground": "#191a1b",
+            "modernUIInactiveShellBackground": "#121314",
+            "sideBarBackground": "#191a1b",
+            "sideBarBorder": "#2a2b2c",
+            "panelBackground": "#191a1b",
+            "editorGroupBorder": "rgba(255, 255, 255, 0.09)",
+            "editorBorder": "#2a2b2c",
+            "surfaceBackground": "#191a1b",
+            "surfaceBorder": "#2a2b2c",
+            "agentsPanelBackground": "#191a1b",
+            "agentsPanelBorder": "#2a2b2c",
+            "statusBarBackground": "#191a1b",
+            "statusBarInactiveBackground": "#121314",
+            "statusBarBorder": "#2a2b2c",
+            "statusBarNoFolderBackground": "#191a1b"
+        },
+        "layoutInfo": {
+            "sideBarSide": "left",
+            "editorPartMinWidth": 220,
+            "titleBarHeight": 35,
+            "activityBarWidth": 48,
+            "sideBarWidth": 300,
+            "auxiliaryBarWidth": 300,
+            "statusBarHeight": 28,
+            "windowBorder": false,
+            "modernUI": true,
+            "modernUICompact": false,
+            "partBounds": {
+                "activityBar": {
+                    "top": 61,
+                    "left": 4,
+                    "width": 44,
+                    "height": 509,
+                    "outerEdges": {
+                        "left": true,
+                        "right": false,
+                        "top": true,
+                        "bottom": true
+                    }
+                },
+                "sideBar": {
+                    "top": 61,
+                    "left": 48,
+                    "width": 300,
+                    "height": 509,
+                    "outerEdges": {
+                        "left": false,
+                        "right": false,
+                        "top": true,
+                        "bottom": true
+                    }
+                },
+                "auxiliaryBar": {
+                    "top": 61,
+                    "left": 936,
+                    "width": 292,
+                    "height": 509,
+                    "outerEdges": {
+                        "left": false,
+                        "right": true,
+                        "top": true,
+                        "bottom": true
+                    }
+                },
+                "editor": {
+                    "top": 61,
+                    "left": 352,
+                    "width": 580,
+                    "height": 509,
+                    "outerEdges": {
+                        "left": false,
+                        "right": false,
+                        "top": true,
+                        "bottom": true
+                    }
+                }
+            }
+        }
+    },
+    "windowSplashWorkspaceOverride": {
+        "layoutInfo": {
+            "sideBarWidth": 300,
+            "auxiliaryBarWidth": 300,
+            "workspaces": {
+                "b87ca6b71ad8fa24efb8274fd345b17f": {
+                    "sideBarVisible": true,
+                    "auxiliaryBarVisible": true
+                }
+            }
+        }
+    },
+    "windowsState": {
+        "lastActiveWindow": {
+            "folder": "file:///home/student/playbooks",
+            "backupPath": "/home/student/playbooks/Backups/04a440404268fee9ce9ee76b003367c3",
+            "uiState": {
+                "mode": 0,
+                "x": 16,
+                "y": 42,
+                "width": 1200,
+                "height": 560
+            }
+        },
+        "openedWindows": []
+    }
+}

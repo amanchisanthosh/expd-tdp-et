@@ -1,0 +1,8 @@
+- name: lineinfine module
+  hosts: node1.example.com
+  tasks:
+  - name: lineinfile module
+    ansible.builtin.lineinfile:
+      path: /mnt/myfile
+      regex: '^Santhosh'
+      line: 'SanthoshRajender santhosh.rahender@expditors.com'

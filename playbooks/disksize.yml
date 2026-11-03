@@ -1,0 +1,10 @@
+- name: disk size based install
+  hosts: node1.example.com
+  tasks:
+  - name: install mariadb-server if enough space on root
+    ansible.builtin.dnf:
+      name: mariadb-server
+      state: latest
+    loop: "{{ ansible_facts['mounts'] }}"
+    when: item['mount'] == "/" and item['size_available'] > 300000000
+

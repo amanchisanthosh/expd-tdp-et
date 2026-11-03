@@ -1,0 +1,22 @@
+---
+- name: My first play
+  hosts: node1.example.com
+  ignore_errors: yes
+  tasks:
+  - name: My first task
+    ansible.builtin.user:
+      name: u72
+      state: present
+  - name: My second task
+    ansible.builtin.yum:
+      name: httpd
+      state: latest
+  - name: My third task
+    ansible.builtin.user:
+      namei: u73
+      state: present
+  - name: My fourth task
+    ansible.builtin.yum:
+      name: dialog
+      state: present
+...

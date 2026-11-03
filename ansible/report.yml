@@ -1,0 +1,8 @@
+- name: myhostdetails
+  hosts: dev, test
+  tasks:
+  - name: myhostdetails
+    ansible.builtin.template:
+      src: myhostdetails
+      dest: /mnt
+

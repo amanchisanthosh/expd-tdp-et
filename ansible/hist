@@ -1,0 +1,310 @@
+    1  cd /home/student/ansible
+    2  su -
+    3  ls /home/student/ansible
+    4  exit
+    5  ls
+    6  ssh devops@node2
+    7  exit
+    8  cd /home/student/
+    9  ls -lts /home/student/
+   10  ls -ltd /home/student/
+   11  su -
+   12  ls -ltd /home/student/
+   13  ls /home/student/ansible
+   14  ls
+   15  cat >abc
+   16  ls
+   17  tm abc 
+   18  rm abc 
+   19  vim cert-inventory
+   20  clear
+   21  vim cert-inventory 
+   22  ansible-playbook -group
+   23  ansible-playbook -groups
+   24  ansible-playbook -help
+   25  ansible-navigator -y cert-inventory --groups
+   26  ansible-inventory -i cert-inventory --groups
+   27  ansible-inventory -i cert-inventory --group
+   28  ansible-inventory -i cert-inventory --list
+   29  ansible-inventory -i cert-inventory --graph
+   30  clear
+   31  vim cert-inventory 
+   32  cat cert-inventory 
+   33  clear
+   34  cat cert-inventory 
+   35  ansible-inventory -i cert-inventory --graph
+   36  clear
+   37  ansible-inventory -i cert-inventory --graph
+   38  ansible-inventory -i cert-inventory --graph prod
+   39  pwd
+   40  clear
+   41  cd /home/student/ansible/
+   42  ls
+   43  cp /home/devops/cert-inventory .
+   44  ls
+   45  clear
+   46  cat cert-inventory 
+   47  ansible-inventory -i cert-inventory --graph
+   48  vim ansible.cfg
+   49  ansible-galaxy init webservers
+   50  ls
+   51  rm -rf webservers/
+   52  cd roles
+   53  mkdir roles
+   54  cd roles/
+   55  ansible-galaxy init webservers
+   56  ls
+   57  cd webservers/
+   58  ls
+   59  clear
+   60  cd ../../
+   61  ls
+   62  cat ansible.cfg 
+   63  vim ansible.cfg 
+   64  ansible-config validate
+   65  ansible-config list
+   66  ansible-config dump
+   67  ls
+   68  ansible-config validate
+   69  ls -ltd
+   70  ls -ltd ansible.cfg 
+   71  chmod 777 ansible.cfg 
+   72  ansible-config dump
+   73  ansible version
+   74  ansible --version
+   75  ls
+   76  mv ansible.cfg ansible.cfg.bkp
+   77  ansible-config init
+   78  ls
+   79  ansible-config -h
+   80  ansible-config init
+   81  vim ansible.cfg
+   82  ansible-config dump
+   83  ls ../
+   84  ls -ldr ../
+   85  ls -ldr ../../
+   86  su -
+   87  ls
+   88  ansible-config dump
+   89  clear
+   90  ls
+   91  ls -ltd
+   92  export ANSIBLE_CONFIG=/home/studend/ansible/ansible.cfg
+   93  ansible-config dump
+   94  ansible --version
+   95  ls
+   96  cd ../
+   97  cd ansible/
+   98  ls
+   99  ll
+  100  chmod 777 ansible.cfg
+  101  export ANSIBLE_CONFIG=/home/studend/ansible/ansible.cfg
+  102  pwd
+  103  export ANSIBLE_CONFIG=/home/student/ansible/ansible.cfg
+  104  ansible --version
+  105  clear
+  106  ansible-config 
+  107  clear
+  108  cat ansible.cfg
+  109  cat ansible.cfg.bkp >ansible.cfg
+  110  ll
+  111  ansible --version
+  112  clear
+  113  cat ansible.cfg
+  114  clear
+  115  #ansible dev -m user -a "name=auto-user uid=2050 comment='devops engineer' shell=/bin/sh state=present"
+  116  ansible -help
+  117  clear
+  118  ansible dev -m user -a "name=auto-user uid=2050 comment='devops engineer' shell=/bin/sh state=present" -b
+  119  ssh-keygen
+  120  cd 
+  121  ls
+  122  cd .ssh/
+  123  ls
+  124  ssh-id
+  125  ssh-copy-id devops@node1
+  126  ssh-copy-id devops@node2
+  127  ssh devops@node1 'cat mysource.txt'
+  128  ssh devops@node2 'cat mysource.txt'
+  129  ssh devops@node2 'cat (.txt'
+  130  ssh devops@node2 'cat *.txt'
+  131  clear
+  132  ansible dev -m user -a "name=auto-user uid=2050 comment='devops engineer' shell=/bin/sh state=present" -b
+  133  cd /home/student/ansible/
+  134  ls
+  135  rm ansible.cfg.bkp 
+  136  less ansible.cfg 
+  137  clear
+  138  ansible dev -m user -a "name=auto-user uid=2050 comment='devops engineer' shell=/bin/sh state=present" -b
+  139  clear
+  140  ansible test -m yum -a "name=dialog state=present" -b
+  141  ssh devops@node2
+  142  clear
+  143  ansible test -m yum -a "name=dialog state=present" -b
+  144  clear
+  145  ansible test -m yum -a "name=dialog state=present" -b
+  146  clear
+  147  vim simpleplay.yml
+  148  vim userlistfile
+  149  vim simpleplay.yml 
+  150  ansible-navigator run simpleplay.yml -m stdout --syntax-check
+  151  python
+  152  clear
+  153  python -m pip install --user ansible-navigator
+  154  clear
+  155  ansible-navigator run simpleplay.yml -m stdout --syntax-check
+  156  vim simpleplay
+  157  vim simpleplay.yml 
+  158  ansible-navigator run simpleplay.yml -m stdout --syntax-check
+  159  sudo loginctl enable-linger 1001
+  160  ansible-navigator run simpleplay.yml -m stdout --syntax-check
+  161  clear
+  162  ansible-navigator run simpleplay.yml -m stdout
+  163  vim userlistfile 
+  164  cat userlistfile 
+  165  cat simpleplay.yml 
+  166  clear
+  167  vim httpd.yml
+  168  vim httpd.conf
+  169  vim httpd.yml
+  170  ansible-navigator run httpd.yml -m stdout --syntax-check
+  171  vim httpd.yml
+  172  ansible-navigator run httpd.yml -m stdout --syntax-check
+  173  clear
+  174  ansible-navigator run httpd.yml -m stdout
+  175  vim httpd.yml
+  176  ansible-navigator run httpd.yml -m stdout --syntax-check
+  177  clear
+  178  ansible-navigator run httpd.yml -m stdout --syntax-check
+  179  ansible-navigator run httpd.yml -m stdout
+  180  vim httpd.yml
+  181  ansible-navigator run httpd.yml -m stdout --syntax-check
+  182  clear
+  183  ansible-navigator run httpd.yml -m stdout --syntax-check
+  184  clear
+  185  ansible-navigator run httpd.yml -m stdout --syntax-check
+  186  ansible-navigator run httpd.yml -m stdout
+  187  clear
+  188  ansible-navigator run httpd.yml -m stdout --syntax-check
+  189  ansible-navigator run httpd.yml -m stdout
+  190  clear
+  191  cat httpd.conf 
+  192  vim httpd.yml 
+  193  clear
+  194  vim report.yml
+  195  vim myhostdetails
+  196  ansible node1
+  197  ansible -m setup node1
+  198  ansible -m setup node1.example.com
+  199  ansible -m setup node1.example.com | grep OS
+  200  ansible -m setup node1.example.com > hostdata
+  201  cat hostdata 
+  202  less hostdata 
+  203  vi myhostdetails 
+  204  ansible-navigator run report.yml -m stdout --syntax-check
+  205  cat report.yml 
+  206  ansible-navigator run report.yml -m stdout --syntax-check
+  207  ansible-navigator run report.yml -m stdout
+  208  vi myhostdetails 
+  209  less hostdata 
+  210  vim myhostdetails 
+  211  ansible-navigator run report.yml -m stdout
+  212  vim myhostdetails 
+  213  ansible-navigator run report.yml -m stdout
+  214  clear
+  215  cat report.yml 
+  216  cat myhostdetails 
+  217  ansible-navigator run report.yml -m stdout --syntax-check
+  218  ansible-navigator run report.yml -m stdout
+  219  clear
+  220  vim fetch.yml
+  221  ansible-navigator run fetch.yml -m stdout --syntax-check
+  222  clear
+  223  cat fetch.yml 
+  224  ansible-navigator run fetch.yml -m stdout --syntax-check
+  225  ansible-navigator run fetch.yml -m stdout
+  226  clear
+  227  ls /tmp/
+  228  vim fetch.yml
+  229  ansible-navigator run fetch.yml -m stdout
+  230  ls /tmp/servers 
+  231  clear
+  232  su -
+  233  clear
+  234  vim fetch.yml
+  235  ansible-navigator run fetch.yml -m stdout
+  236  clear
+  237  vim fetch.yml
+  238  less hostdata 
+  239  less myhostdetails 
+  240  vim fetch.yml
+  241  clear
+  242  cat fetch.yml 
+  243  ansible-navigator run fetch.yml -m stdout --syntax-check
+  244  ansible-navigator run fetch.yml -m stdout
+  245  vim fetch.yml
+  246  ansible-navigator run fetch.yml -m stdout
+  247  ls
+  248  vi fetch.yml 
+  249  ansible-navigator run fetch.yml -m stdout
+  250  ls
+  251  ls node1.example.com/
+  252  su -
+  253  vi fetch.yml 
+  254  clear
+  255  cat fetch.yml 
+  256  ansible-navigator run fetch.yml -m stdout --syntax-check
+  257  ansible-navigator run fetch.yml -m stdout
+  258  ls
+  259  tree node*
+  260  vim fetch.yml 
+  261  ansible-navigator run fetch.yml -m stdout
+  262  ls /tmp/n*
+  263  ls /tmp/
+  264  vim fetch.yml 
+  265  ansible-navigator run fetch.yml -m stdout
+  266  ls /tmp/
+  267  vim fetch.yml 
+  268  clear
+  269  cat fetch.yml 
+  270  ansible-navigator run fetch.yml -m stdout
+  271  vim fetch.yml 
+  272  ansible-navigator run fetch.yml -m stdout
+  273  ls /tmp*
+  274  vim fetch.yml 
+  275  clear
+  276  cat fetch.yml 
+  277  ansible-navigator run fetch.yml -m stdout
+  278  rm -rf node*
+  279  clear
+  280  cat fetch.yml 
+  281  ansible-navigator run fetch.yml -m stdout
+  282  vim fetch.yml 
+  283  clear
+  284  rm -rf node*
+  285  cat fetch.yml 
+  286  ansible-navigator run fetch.yml -m stdout
+  287  tree node1.example.com/
+  288  tree node2.example.com/
+  289  ls -ltd /home/student/
+  290  sudo chmod 765 /home/student/
+  291  scp student@node1:/etc/sudoers.d/remoteuser .
+  292  su -
+  293  clear
+  294  cd /home/student/ansible/
+  295  ls
+  296  rm *.json
+  297  ls
+  298  ansible-galaxy role init roles/webserver
+  299  ls roles/
+  300  rm -rf roles/webservers
+  301  ls roles/
+  302  vim roles/webserver/tasks/main.yml 
+  303  vim roles/webserver/handlers/main.yml 
+  304  vim webserver.yml
+  305  clear
+  306  ansible-navigator run fetch.yml -m stdout --syntax-check
+  307  ansible view
+  308  ansible-config dump
+  309  clear
+  310  history >hist

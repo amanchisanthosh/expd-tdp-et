@@ -1,0 +1,37 @@
+2026-11-01 22:34:32.144 [info] Agent Host process started successfully
+2026-11-01 22:34:32.395 [info] AgentService initialized
+2026-11-01 22:34:32.455 [info] Registering agent provider: copilotcli
+2026-11-01 22:34:32.455 [info] Registering agent provider: claude
+2026-11-01 22:34:32.463 [info] [Copilot] BYOK bridge changed; refreshing models
+2026-11-01 22:34:32.466 [info] [Copilot] Auto presentation: Auto beside HydraFusion (fallback): dynamic Auto tiers are off; HydraFusion setting adds [none]
+2026-11-01 22:34:32.466 [info] [Copilot] BYOK bridge changed; refreshing models
+2026-11-01 22:34:32.564 [info] [Claude] Models refreshed (merged). Count: 0, 
+2026-11-01 22:34:32.570 [info] [Copilot] Listing chats to migrate...
+2026-11-01 22:34:32.571 [info] [Copilot] Starting CopilotClient...
+2026-11-01 22:34:32.572 [info] [Copilot] Set CLI env: GITHUB_COPILOT_INTEGRATION_ID=vscode-chat
+2026-11-01 22:34:32.598 [info] [Copilot] Using bundled runtime path: /usr/share/code/resources/app/node_modules.asar.unpacked/@github/copilot-sdk-linux-x64/prebuilds/linux-x64/copilot-runtime
+2026-11-01 22:34:32.657 [info] [Claude] SDK not downloaded yet; deferring the migratable chat list
+2026-11-01 22:34:32.663 [info] [WebSocketProtocol] Server listening on socket /tmp/vscode-ah-171677e877f0/VpOwAVfEbgItVe1i8j0X3g.sock
+2026-11-01 22:34:32.665 [info] [Copilot] BYOK bridge changed; refreshing models
+2026-11-01 22:34:32.685 [info] [CommandAutoApprover] Tree-sitter initialized (bash=available, powershell=available)
+2026-11-01 22:34:32.708 [info] [node-compile-cache] agent-host: packaged cache enabled (status: enabled, configured: /usr/share/code/resources/app/node-compile-cache/agent-host, active: /usr/share/code/resources/app/node-compile-cache/agent-host/v24.22.1-x64-60e4fe36)
+2026-11-01 22:34:32.835 [info] [ProtocolServer] Initialize: clientId=72386c04-7371-4d89-96ac-40bfaa7806e2, protocolVersions=[1.0.0, 0.10.0, 0.9.0]
+2026-11-01 22:34:32.930 [info] [Copilot] CopilotClient started successfully
+2026-11-01 22:34:32.938 [info] [Copilot] Listed 0 SDK session(s) for chats to migrate
+2026-11-01 22:34:32.938 [info] [Copilot] Found 0 legacy sessions
+2026-11-01 22:34:32.949 [info] [CopilotDiscovery] Started: maxCandidateWatches=32, maxConcurrentStats=4, coalesceMs=500
+2026-11-01 22:34:32.949 [info] [AgentService] sessions_v2 import for provider copilotcli: 0 synchronized, 0 current, 0 excluded, 0 stale exclusions, 0 incomplete, 0 failed, marker set in 481ms (0 db opens, 0 db stats)
+2026-11-01 22:34:32.950 [info] [CopilotDiscovery] Scan 1 started: initial=true, candidates=0, reasons={}, watched=0, pending=0, ignoredHostEvents=0
+2026-11-01 22:34:32.951 [info] [Copilot] Listing discoverable chats...
+2026-11-01 22:34:32.953 [info] [Copilot] Listed 0 SDK session(s) for discoverable chats
+2026-11-01 22:34:32.964 [info] [CopilotDiscovery] Scan 1 catalog: sdkSessions=0, candidates=0, listMs=3, classifyMs=10, published=0, external=0, legacy=0, known=0, disabledLegacy=0, archivedLegacy=0, missingCwd=0, unsupportedClient=0, stale=0, failed=0
+2026-11-01 22:34:32.965 [info] [CopilotDiscovery] Scan 1 finished: elapsedMs=14, completed=0, pending=0, watched=0, overflow=0, ignoredHostEvents=0
+2026-11-01 22:34:33.033 [info] [AgentService] showExternalSessions changed 'none' -> 'last7Days'; queueing session list reconciliation
+2026-11-01 22:34:33.033 [info] [Copilot] Startup config changed (copilotConnectors=true), restarting CopilotClient
+2026-11-01 22:34:33.033 [info] [Copilot] Restarting CopilotClient (startup config changed: copilotConnectors=true)
+2026-11-01 22:34:33.035 [info] Registering agent provider: codex
+2026-11-01 22:34:33.126 [info] [AgentService] pruned 0 stale external session row(s) older than 30 days
+2026-11-01 22:34:33.128 [info] [Claude] SDK not downloaded yet; deferring chat discovery
+2026-11-01 22:34:33.156 [info] [Copilot] Auto presentation: Auto beside HydraFusion (fallback): CAPI provided no Auto tiers; HydraFusion setting adds [none]
+2026-11-01 22:34:36.628 [info] [Claude] SDK not downloaded yet; deferring the migratable chat list
+2026-11-01 22:34:36.635 [info] [Claude] SDK not downloaded yet; deferring the migratable chat list

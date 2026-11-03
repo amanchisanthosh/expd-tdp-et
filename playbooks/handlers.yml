@@ -1,0 +1,31 @@
+- name: handlers
+  hosts: node1.example.com
+  tasks:
+  - name: first task
+    ansible.builtin.user:
+      name: webuser
+      state: present
+  - name: second task
+    ansible.builtin.yum:
+      name: httpd
+      state: present
+  - name: copy file
+    ansible.builtin.copy:
+      src: httpd.conf.copy
+      dest: /tmp/ 
+    notify:
+      - restart apache
+  - name: file creation
+    ansible.builtin.file:
+      path: /tmp/testfolder
+      state: directory
+
+  handlers:
+    - name: restart apache
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+    - name: restart postfix    
+      ansible.builtin.service:
+        name: postfix      
+        state: restarted

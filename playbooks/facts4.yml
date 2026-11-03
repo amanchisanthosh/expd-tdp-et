@@ -1,0 +1,7 @@
+- name: Fact dump
+  hosts: servers
+  tasks:
+    - name: Print all facts
+      ansible.builtin.debug:
+        msg: My critivality is "{{ ansible_local['custom']['criticality']['crit']}}"
+

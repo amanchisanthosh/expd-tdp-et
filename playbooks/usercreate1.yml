@@ -1,0 +1,13 @@
+- name: users create
+  hosts: node1.example.com
+  vars:
+    users:
+    - user34
+    - user35
+    - user36
+  tasks:
+    - name: users creation
+      ansible.builtin.user:
+        name: "{{ item }}"  
+        state: present
+      loop: "{{ users }}"

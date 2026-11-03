@@ -1,0 +1,15 @@
+[webservers]
+node1.example.com
+[dbservers]
+node2.example.com
+[appservers]
+node5.example.com
+node[a:b].example.com
+[ips]
+192.168.10.[1:5]
+[teamservers]
+
+[servers:children]
+dbservers
+appservers
+teamservers

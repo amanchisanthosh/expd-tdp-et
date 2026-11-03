@@ -1,0 +1,8 @@
+- name: template
+  hosts: node1.example.com
+  tasks:
+  - name: template
+    ansible.builtin.template:
+      src: file-data
+      dest: /mnt
+

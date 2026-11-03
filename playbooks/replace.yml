@@ -1,0 +1,8 @@
+- name: replace Module
+  hosts: node1.example.com
+  tasks:
+  - name: replace module
+    ansible.builtin.replace:
+      path: /mnt/myfile
+      regexp: '^Santhosh Rajender'
+      replace: 'Santhosh Amanchi'

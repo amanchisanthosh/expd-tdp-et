@@ -1,0 +1,10 @@
+- name: Fetch resolvconf
+  hosts: all
+  tasks:
+    - name: fetch resolv.conf
+      ansible.builtin.fetch:
+        src: /etc/resolv.conf
+        dest: /tmp/{{ ansible_hostname }}.resolv.conf
+          # dest: "/home/student/ansible"
+        flat: true
+

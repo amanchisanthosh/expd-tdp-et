@@ -1,0 +1,11 @@
+users:
+  - uname: user60
+    uid: 2010
+    ushell: /bin/sh
+  - uname: user61
+    uid: 2011
+    ushell: /bin/sh
+  - uname: user62
+    uid: 2012
+    ushell: /bin/bash
+

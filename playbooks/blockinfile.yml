@@ -1,0 +1,10 @@
+- name: blockinfile Module
+  hosts: node1.example.com
+  tasks:
+  - name: blockinfile module
+    ansible.builtin.blockinfile:
+      path: /mnt/myfile
+      block: |
+        This line is injected by Ansible
+        This line too by Ansible
+

@@ -1,0 +1,10 @@
+- name: Fact dump
+  hosts: node1.example.com
+  gather_facts: false
+  tasks:
+    - name: Print all facts
+      ansible.builtin.debug:
+        msg: |
+          My Arch is "{{ ansible_facts['architecture'] }}"
+          My IPV4 Address is "{{ ansible_facts['default_ipv4']['address'] }}" 
+

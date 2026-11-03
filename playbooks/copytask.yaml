@@ -1,0 +1,12 @@
+- name: copy Module
+  hosts: node1.example.com
+  tasks:
+  - name: copy module
+    ansible.builtin.copy:
+      src: /opt/node1-sourcefile
+      dest: /mnt
+      remote_src: true
+  - name: copy from master
+    ansible.builtin.copy:
+      src: file-data
+      dest: /tmp/src-data

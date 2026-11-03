@@ -1,0 +1,9 @@
+- name: Fetch module
+  hosts: node1.example.com
+  tasks:
+    - name: fetch module
+      ansible.builtin.fetch:
+        src: /opt/node1-sourcefile
+        dest: /home/student/playbooks/
+        flat: yes
+

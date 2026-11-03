@@ -1,0 +1,11 @@
+2026-11-01 22:34:33.575 [info] Extension host with pid 13337 started
+2026-11-01 22:34:33.575 [info] Skipping acquiring lock for /home/student/playbooks/User/workspaceStorage/b87ca6b71ad8fa24efb8274fd345b17f.
+2026-11-01 22:34:34.142 [info] ExtensionService#_doActivateExtension vscode.github-authentication, startup: false, activationEvent: 'onAuthenticationRequest:github'
+2026-11-01 22:34:34.237 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2026-11-01 22:34:35.027 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*'
+2026-11-01 22:34:35.142 [info] ExtensionService#_doActivateExtension vscode.github, startup: true, activationEvent: '*'
+2026-11-01 22:34:35.246 [info] Eager extensions activated
+2026-11-01 22:34:35.246 [info] [node-compile-cache] extension-host: packaged cache enabled (status: enabled, configured: /usr/share/code/resources/app/node-compile-cache/extension-host, active: /usr/share/code/resources/app/node-compile-cache/extension-host/v24.22.1-x64-60e4fe36)
+2026-11-01 22:34:35.380 [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch, startup: false, activationEvent: 'onStartupFinished'
+2026-11-01 22:34:35.387 [info] ExtensionService#_doActivateExtension vscode.merge-conflict, startup: false, activationEvent: 'onStartupFinished'
+2026-11-01 22:34:38.345 [info] ExtensionService#_doActivateExtension vscode.microsoft-authentication, startup: false, activationEvent: 'onAuthenticationRequest:microsoft'

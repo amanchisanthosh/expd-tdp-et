@@ -1,0 +1,8 @@
+- name: file creation
+  hosts: node1.example.com
+  tasks:
+  - name: file creation
+    ansible.builtin.file:
+      path: /mnt/file-from-ansible
+      state: touch 
+

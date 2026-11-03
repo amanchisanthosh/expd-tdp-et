@@ -1,0 +1,26 @@
+---
+# tasks file for webserver
+- name: install httpd
+  ansible.builtin.yum:
+    name: httpd
+    state: latest
+- name: file creation
+  ansible.builtin.file:
+    path: /var/www/html/index.html
+    state: touch
+- name: shell command
+  #ansible.builtin.shell: "echo This is Ansible generated webpage authored by SR> /var/www/html/index.html"
+  ansible.builtin.shell: "echo Its a ansible_role!> /var/www/html/index.html"
+  register: output
+  notify:       
+    - restart_apache    
+#- name: copy file
+#  ansible.builtin.copy:
+#    src: httpd.conf.bkp
+#    dest: /mnt
+#  notify:
+#    - restart_apache
+- name: template config
+  ansible.builtin.template:
+    src: template.j2
+    dest: /opt/template-file

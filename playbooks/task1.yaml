@@ -1,0 +1,34 @@
+- name: src webserver
+  hosts: node1.example.com
+  tasks:
+  - name: webserver deploy
+    tags:
+      - web
+      - install
+    ansible.builtin.yum:
+      name: httpd
+      state: latest
+  - name: wget soruce file
+    tags:
+      - web
+    ansible.builtin.get_url:
+      url: http://10.0.16.2/labs/src.html
+      dest: /var/www/html/index.html
+    register: result
+    retries: 3
+    delay: 3
+    until: result is succeeded
+  - name: start httpd service
+    tags:
+      - start
+    ansible.builtin.service:
+      name: httpd
+      state: started
+      enabled: yes
+  # - name: open port 80 for web service
+  #   tags:
+  #     - port
+  #   ansible.posix.firewalld:
+  #     port: 80/tcp
+  #     state: enabled
+  #     permanent: true

@@ -1,0 +1,11 @@
+---
+- name: Install postfix
+  yum:
+    name: postfix
+    state: present
+  notify: Start postfix
+
+- name: Create smtp file
+  template:
+    src: postfix-smtp.j2
+    dest: /mnt/postfix-smtp
