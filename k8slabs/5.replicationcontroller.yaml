@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: repctl1
+spec:
+  replicas: 2
+  selector:
+    pod1: ct1
+  template:
+    metadata:
+      name: myrc1
+      labels:
+        pod1: ct1
+    spec:
+      containers:
+        - name: myrc1
+          image: nginxdemos/hello
+          ports:
+            - containerPort: 80

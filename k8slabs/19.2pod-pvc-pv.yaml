@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pv-pvc-pod
+  labels:
+    app.kubernetes.io/name: pv-pvc-pod
+spec:
+  volumes:
+    - name: pv-pvc-storage
+      persistentVolumeClaim:
+        claimName: pvc-hostpath
+  containers:
+  - name: pv-pvc-cont
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+    volumeMounts:
+      - name: pv-pvc-storage
+        mountPath: /usr/share/nginx/html      

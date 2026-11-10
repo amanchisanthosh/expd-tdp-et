@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfspod
+  labels:
+    app.kubernetes.io/name: nfspod
+spec:
+  volumes:
+    - name: nfsstorage
+      persistentVolumeClaim:
+        claimName: nfs-pvc
+  containers:
+  - name: nfscont
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+    volumeMounts:
+      - name: nfsstorage
+        mountPath: /usr/share/nginx/html      

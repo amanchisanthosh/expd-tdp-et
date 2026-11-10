@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emptydirpod
+  labels:
+    app.kubernetes.io/name: emptydirpod
+spec:
+  containers:
+  - name: httpdcontainer
+    image: httpd
+    volumeMounts:
+      - mountPath: /cache
+        name: cache-volume
+      - mountPath: /scratch
+        name: scratch-volume
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+  volumes:
+    - name: cache-volume
+      emptyDir:
+        sizeLimit: 200Mi
+    - name: scratch-volume
+      emptyDir:
+        sizeLimit: 100Mi

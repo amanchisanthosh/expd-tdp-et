@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysecpod
+  labels:
+    app.kubernetes.io/name: mysecpod
+spec:
+  containers:
+  - name: mysecpod
+    image: nginx
+    env:
+      - name: DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: dbadmin
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: password
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80

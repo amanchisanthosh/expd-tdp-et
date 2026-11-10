@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod5
+  labels:
+    app: nginxdemos
+    env: demo
+    proj: webapp
+spec:
+  containers:
+    - name: cont1
+      image: nginxdemos/hello

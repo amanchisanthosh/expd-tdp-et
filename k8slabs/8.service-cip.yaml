@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice
+spec:
+  selector:
+    # app: myapp
+    color: red
+  ports:
+  - port: 80 # exposed service clusterip:port
+    targetPort: 80 #container 

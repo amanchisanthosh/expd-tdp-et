@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nslpod
+  labels:
+    app.kubernetes.io/name: notolerancepod
+spec:
+  nodeSelector: 
+    disk: ssd
+    "beta.kubernetes.io/os": linux
+  containers:
+  - name: nslpod
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset1
+  labels:
+    app: myapprs1
+    purpose: demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      k1: v1
+  template:
+    metadata:
+      labels:
+        k1: v1
+    spec:
+      containers:
+        - name: myappc1
+          image: nginxdemos/hello:plain-text

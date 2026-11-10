@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploynginixdemos
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: deploynginixdemos
+      color: red
+  template:
+    metadata:
+      labels:
+        app: deploynginixdemos
+        env: demo
+        color: red
+    spec:
+      containers:
+      - name: nginxdemos
+        image: nginxdemos/hello:plain-text
+        ports:
+        - containerPort: 80

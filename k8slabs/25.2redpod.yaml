@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redpod
+  labels:
+    app.kubernetes.io/name: notolerancepod
+spec:
+  tolerations:
+    - key: "color"
+      operator: "Equal"
+      value: "red"
+      effect: "NoExecute"
+  containers:
+  - name: redpod
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80

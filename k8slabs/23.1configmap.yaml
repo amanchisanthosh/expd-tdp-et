@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigdev
+data:
+  username: root
+  password: passW0RD
+  db_host: "10.0.16.119"
+  log_level: "verbose"
+  test: novalue
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigprod
+data:
+  username: rootuser
+  password: passW0RDroot
+  db_host: "10.0.16.219"
+  log_level: "trace"
+  test: prodvalue
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod11
+  labels:
+    app.kubernetes.io/name: nginx
+spec:
+  containers:
+  - name: cont1
+    image: nginx
+    envFrom:
+      - configMapRef:
+          name: myconfigdev
+    

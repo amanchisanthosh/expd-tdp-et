@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpoddir
+  labels:
+    app.kubernetes.io/name: hostpoddir
+spec:
+  nodeName: node1
+  containers:
+  - name: hostpoddir
+    image: nginx
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    volumeMounts:
+      - name: hostpathdir
+        mountPath: /usr/share/nginx/hkgtml
+    ports:
+      - containerPort: 80
+  volumes:
+  - name: hostpathdir
+    hostPath: 
+      path: /htmlcontent
+      type: Directory
