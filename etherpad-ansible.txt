@@ -1,0 +1,1907 @@
+
+Ansible Automation Session - 28Oct26
+
+
+Configuring hostname:
+    
+[root@master ~]# hostname
+master
+[root@master ~]# hostnamectl set-hostname master.example.com
+[root@master ~]# hostname
+master.example.com
+[root@master ~]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: ens18: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether bc:24:11:42:1a:25 brd ff:ff:ff:ff:ff:ff
+    altname enp0s18
+    inet 10.0.16.2/8 brd 10.255.255.255 scope global noprefixroute ens18
+       valid_lft forever preferred_lft forever
+    inet6 fe80::be24:11ff:fe42:1a25/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+[root@master ~]# 
+
+Setup IP Address:
+[root@master ~]# vim  /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+10.0.16.2    master.example.com    master
+10.0.16.52    node1.example.com    node1
+10.0.16.102    node2.example.com    node2
+[root@master ~]# 
+
+Configure the above steps in both node1 and node2 vms
+
+Passwordless Auth:
+
+Manual Configuration:
+Node1:
+[root@node1 ~]# useradd devops
+[root@node1 ~]# passwd devops
+Changing password for user devops.
+New password: 
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+[root@node1 ~]# 
+
+Node2:
+[root@node2 ~]# useradd devops
+[root@node2 ~]# passwd devops
+Changing password for user devops.
+New password: 
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+[root@node2 ~]# 
+   
+    
+[root@master ~]# su - student
+[student@master ~]$ ssh devops@node1
+The authenticity of host 'node1 (10.0.16.52)' can't be established.
+ED25519 key fingerprint is SHA256:h51K2uPvj0lO9/NVP2tsDkMKm5lWbh1Wd9lG4jtfE+w.
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:1: 10.0.16.2
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'node1' (ED25519) to the list of known hosts.
+devops@node1's password: 
+[devops@node1 ~]$ exit
+logout
+Connection to node1 closed.
+[student@master ~]$ ssh devops@node2
+The authenticity of host 'node2 (10.0.16.102)' can't be established.
+ED25519 key fingerprint is SHA256:h51K2uPvj0lO9/NVP2tsDkMKm5lWbh1Wd9lG4jtfE+w.
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:1: 10.0.16.2
+    ~/.ssh/known_hosts:4: node1
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'node2' (ED25519) to the list of known hosts.
+devops@node2's password: 
+[devops@node2 ~]$ 
+
+Passwordless Auth::
+
+[student@master ~]$ ssh-keygen 
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/student/.ssh/id_ed25519): 
+Enter passphrase for "/home/student/.ssh/id_ed25519" (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/student/.ssh/id_ed25519
+Your public key has been saved in /home/student/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:VVNY7BF6+7vvxeMDDwbxLCuVpAziAAeKpIxDlYNiJl0 student@master.example.com
+The key's randomart image is:
++--[ED25519 256]--+
+| *=+E       o=+. |
+|@+o+ . .   +.oo  |
+|@.  + . o + *... |
+| .   .   + = +.. |
+|        S . + .  |
+|         . . + o |
+|          . . +.+|
+|              .o+|
+|               =*|
++----[SHA256]-----+
+[student@master ~]$ cd .ssh
+[student@master .ssh]$ ls -l
+total 16
+-rw-------. 1 student student 419 Oct 28 02:10 id_ed25519
+-rw-r--r--. 1 student student 108 Oct 28 02:10 id_ed25519.pub
+-rw-------. 1 student student 999 Oct 28 01:58 known_hosts
+-rw-r--r--. 1 student student  91 Jun  1 05:05 known_hosts.old
+[student@master .ssh]$ cat id_ed25519
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACCBDTGDQJforFGZmKLzj/RgG2UqqlGKW612Yt0ctKFJ2wAAAKCnip8vp4qf
+LwAAAAtzc2gtZWQyNTUxOQAAACCBDTGDQJforFGZmKLzj/RgG2UqqlGKW612Yt0ctKFJ2w
+AAAECJBziXtOTA7SbvWuY7oFkd7DWOxJuuxO3yvxZyIZ8eKYENMYNAl+isUZmYovOP9GAb
+ZSqqUYpbrXZi3Ry0oUnbAAAAGnN0dWRlbnRAbWFzdGVyLmV4YW1wbGUuY29tAQID
+-----END OPENSSH PRIVATE KEY-----
+[student@master .ssh]$ cat id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIENMYNAl+isUZmYovOP9GAbZSqqUYpbrXZi3Ry0oUnb student@master.example.com
+[student@master .ssh]$ ssh-copy-id devops@node1
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/student/.ssh/id_ed25519.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+devops@node1's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with: "ssh 'devops@node1'"
+and check to make sure that only the key(s) you wanted were added.
+
+Verify:
+[student@master .ssh]$ ssh devops@node1
+Last login: Wed Oct 28 02:04:28 2026 from 10.0.16.18
+[devops@node1 ~]$ exit
+logout
+Connection to node1 closed.
+[student@master .ssh]$ ssh-copy-id devops@node2
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/student/.ssh/id_ed25519.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+devops@node2's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with: "ssh 'devops@node2'"
+and check to make sure that only the key(s) you wanted were added.
+
+Verify:
+[student@master .ssh]$ ssh devops@node2
+Last login: Wed Oct 28 02:05:36 2026 from 10.0.16.18
+[devops@node2 ~]$ 
+
+
+SUDO:
+Node1:
+[root@node1 sudoers.d]# cd /etc/sudoers.d/
+[root@node1 sudoers.d]# cat remoteuser 
+#<username>      <hostname>      <command>
+devops        ALL=(ALL)    NOPASSWD: ALL
+[root@node1 sudoers.d]# 
+
+Node2:
+[root@node2 ~]# cd /etc/sudoers.d/
+[root@node2 sudoers.d]# cat remoteuser
+devops        ALL=(ALL)    NOPASSWD: ALL
+[root@node1 sudoers.d]#
+
+[root@node2 sudoers.d]# su - devops
+[devops@node2 ~]$ sudo useradd u200
+[devops@node2 ~]$ 
+
+Verify:
+for node1:
+[student@master ~]$ ssh devops@node1 -C "sudo useradd u200" 
+[student@master ~]$
+
+[root@node1 sudoers.d]# cat /etc/passwd | tail -1
+u200:x:1008:1008::/home/u200:/bin/bash
+[root@node1 sudoers.d]# 
+
+for node2:
+[student@master ~]$ ssh devops@node2 -C "sudo useradd u210" 
+[student@master ~]$
+
+[root@node2 sudoers.d]# cat /etc/passwd | tail -1
+u210:x:1004:1004::/home/u210:/bin/bash
+[root@node2 sudoers.d]#
+
+Install Ansible:
+[root@master ~]# dnf install python3-pip
+Last metadata expiration check: 3:17:23 ago on Tue 27 Oct 2026 11:32:58 PM EDT.
+Dependencies resolved.
+=========================================================================================
+ Package            Architecture  Version                         Repository        Size
+=========================================================================================
+Installing:
+ python3-pip        noarch        21.3.1-2.el9_8.rocky.0.1        appstream        1.7 M
+
+Transaction Summary
+=========================================================================================
+Install  1 Package
+
+Total download size: 1.7 M
+Installed size: 8.8 M
+Is this ok [y/N]: y
+Downloading Packages:
+python3-pip-21.3.1-2.el9_8.rocky.0.1.noarch.rpm          9.8 MB/s | 1.7 MB     00:00    
+-----------------------------------------------------------------------------------------
+Total                                                    2.2 MB/s | 1.7 MB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                 1/1 
+  Installing       : python3-pip-21.3.1-2.el9_8.rocky.0.1.noarch                     1/1 
+  Running scriptlet: python3-pip-21.3.1-2.el9_8.rocky.0.1.noarch                     1/1 
+  Verifying        : python3-pip-21.3.1-2.el9_8.rocky.0.1.noarch                     1/1 
+
+Installed:
+  python3-pip-21.3.1-2.el9_8.rocky.0.1.noarch                                            
+
+Complete!
+[root@master ~]# 
+
+SU - Student user 
+
+[root@master ~]# su - student
+
+[student@master ~]$ python3 -m pip install ansible-navigator --user
+Collecting ansible-navigator
+  Downloading ansible_navigator-24.2.0-py3-none-any.whl (297 kB)
+     |████████████████████████████████| 297 kB 922 kB/s            
+Collecting onigurumacffi<2,>=1.1.0
+  Downloading onigurumacffi-1.4.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (603 kB)
+     |████████████████████████████████| 603 kB 1.2 MB/s            
+Requirement already satisfied: pyyaml in /usr/lib64/python3.9/site-packages (from ansible-navigator) (5.4.1)
+Collecting tzdata
+  Downloading tzdata-2026.5-py2.py3-none-any.whl (347 kB)
+     |████████████████████████████████| 347 kB 1.3 MB/s            
+Collecting jsonschema
+  Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+     |████████████████████████████████| 90 kB 1.4 MB/s            
+Collecting ansible-lint>=6.19.0
+  Downloading ansible_lint-6.22.2-py3-none-any.whl (297 kB)
+     |████████████████████████████████| 297 kB 1.3 MB/s            
+Collecting importlib-metadata
+  Downloading importlib_metadata-8.7.1-py3-none-any.whl (27 kB)
+Collecting ansible-builder>=3.0.0
+
+  Downloading ansible_core-2.15.13-py3-none-any.whl (2.3 MB)
+     |████████████████████████████████| 2.3 MB 1.8 MB/s            
+Collecting black>=22.8.0
+  Downloading black-25.11.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+     |████████████████████████████████| 1.7 MB 1.9 MB/s            
+Collecting ruamel.yaml>=0.18.5
+  Downloading ruamel_yaml-0.19.1-py3-none-any.whl (118 kB)
+     |████████████████████████████████| 118 kB 2.0 MB/s            
+Collecting filelock>=3.3.0
+  Downloading filelock-3.19.1-py3-none-any.whl (15 kB)
+Collecting wcmatch>=8.1.2
+  Downloading wcmatch-10.1-py3-none-any.whl (39 kB)
+Collecting ansible-compat>=4.1.11
+  Downloading ansible_compat-24.10.0-py3-none-any.whl (24 kB)
+Collecting subprocess-tee>=0.4.1
+  Downloading subprocess_tee-0.4.2-py3-none-any.whl (5.2 kB)
+Collecting yamllint>=1.30.0
+  Downloading yamllint-1.37.1-py3-none-any.whl (68 kB)
+     |████████████████████████████████| 68 kB 2.5 MB/s            
+Collecting pathspec>=0.10.3
+  Downloading pathspec-1.1.1-py3-none-any.whl (57 kB)
+     |████████████████████████████████| 57 kB 2.4 MB/s            
+Collecting python-daemon
+  Downloading python_daemon-3.1.2-py3-none-any.whl (30 kB)
+Requirement already satisfied: pexpect>=4.5 in /usr/lib/python3.9/site-packages (from ansible-runner<3,>=2.3.1->ansible-navigator) (4.8.0)
+Collecting importlib-metadata
+  Downloading importlib_metadata-6.2.1-py3-none-any.whl (21 kB)
+Collecting zipp>=0.5
+  Downloading zipp-3.23.1-py3-none-any.whl (10 kB)
+Collecting jsonschema-specifications>=2023.03.6
+  Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Collecting referencing>=0.28.4
+  Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+Collecting rpds-py>=0.7.1
+  Downloading rpds_py-0.27.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (384 kB)
+     |████████████████████████████████| 384 kB 2.1 MB/s            
+Collecting attrs>=22.2.0
+  Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+     |████████████████████████████████| 67 kB 2.4 MB/s            
+Collecting cffi>=1
+  Downloading cffi-2.0.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (216 kB)
+     |████████████████████████████████| 216 kB 2.7 MB/s            
+Collecting MarkupSafe>=2.0
+  Requirement already satisfied: setuptools in /usr/lib/python3.9/site-packages (from pbr>=2->bindep->ansible-builder>=3.0.0->ansible-navigator) (53.0.0)
+Installing collected packages: typing-extensions, rpds-py, pycparser, attrs, referencing, MarkupSafe, cffi, resolvelib, packaging, mdurl, jsonschema-specifications, jinja2, importlib-resources, cryptography, zipp, tomli, subprocess-tee, pytokens, pygments, platformdirs, pbr, pathspec, Parsley, mypy-extensions, markdown-it-py, lockfile, jsonschema, distro, click, bracex, ansible-core, yamllint, wcmatch, ruamel.yaml, rich, python-daemon, importlib-metadata, filelock, black, bindep, ansible-compat, tzdata, onigurumacffi, ansible-runner, ansible-lint, ansible-builder, ansible-navigator
+Successfully installed MarkupSafe-3.0.4 Parsley-1.3 ansible-builder-3.1.1 ansible-compat-24.10.0 ansible-core-2.15.13 ansible-lint-6.22.2 ansible-navigator-24.2.0 ansible-runner-2.4.3 attrs-26.1.0 bindep-2.14.0 black-25.11.0 bracex-2.6 cffi-2.0.0 click-8.1.8 cryptography-50.0.2 distro-1.9.0 filelock-3.19.1 importlib-metadata-6.2.1 importlib-resources-5.0.7 jinja2-3.1.6 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 lockfile-0.12.2 markdown-it-py-3.0.0 mdurl-0.1.2 mypy-extensions-1.1.0 onigurumacffi-1.4.1 packaging-26.3 pathspec-1.1.1 pbr-7.1.3 platformdirs-4.4.0 pycparser-2.23 pygments-2.21.0 python-daemon-3.1.2 pytokens-0.4.1 referencing-0.36.2 resolvelib-1.0.1 rich-15.0.0 rpds-py-0.27.1 ruamel.yaml-0.19.1 subprocess-tee-0.4.2 tomli-2.5.0 typing-extensions-4.16.0 tzdata-2026.5 wcmatch-10.1 yamllint-1.37.1 zipp-3.23.1
+[student@master ~]$ 
+
+[student@master ~]$ ansible<tab><tab>
+ansible             ansible-console     ansible-lint        ansible-runner
+ansible-builder     ansible-doc         ansible-navigator   ansible-test
+ansible-config      ansible-galaxy      ansible-playbook    ansible-vault
+ansible-connection  ansible-inventory   ansible-pull        
+[student@master ~]$ 
+
+
+[student@master ~]$ ansible-navigator 
+---------------------------------------------------------------------
+Execution environment image and pull policy overview
+---------------------------------------------------------------------
+Execution environment image name:     ghcr.io/ansible/creator-ee:v0.22.0
+Execution environment image tag:      v0.22.0
+Execution environment pull arguments: None
+Execution environment pull policy:    tag
+Execution environment pull needed:    True
+---------------------------------------------------------------------
+Updating the execution environment
+---------------------------------------------------------------------
+Running the command: podman pull ghcr.io/ansible/creator-ee:v0.22.0
+WARN[0000] The cgroupv2 manager is set to systemd but there is no systemd user session available 
+WARN[0000] For using systemd, you may need to log in using a user session 
+WARN[0000] Alternatively, you can enable lingering with: `loginctl enable-linger 1000` (possibly as root) 
+WARN[0000] Falling back to --cgroup-manager=cgroupfs    
+WARN[0000] The cgroupv2 manager is set to systemd but there is no systemd user session available 
+WARN[0000] For using systemd, you may need to log in using a user session 
+WARN[0000] Alternatively, you can enable lingering with: `loginctl enable-linger 1000` (possibly as root) 
+WARN[0000] Falling back to --cgroup-manager=cgroupfs    
+Trying to pull ghcr.io/ansible/creator-ee:v0.22.0...
+Getting image source signatures
+Copying blob 2764fac24a7d done   | 
+Copying blob 32db66e6bbce done   | 
+Copying blob 2941e6f1d2bc done   | 
+Copying blob ca6ff2c3ecc4 done     | 
+Copying blob 92e1f4a92098 done    | 
+Copying blob 600b306c9749 done   | 
+Copying blob d419ad167630 done   | 
+Copying blob 7b03b9e3c798 done   | 
+Copying blob 05a232cb5cea done   | 
+Copying blob be915b595e0a done   | 
+Copying blob 25380a2f785a done   | 
+Copying blob 1a57afb20498 done   | 
+Copying blob 09f2372dbd92 done   | 
+Copying config 4405e824c5 done   | 
+Writing manifest to image destination
+4405e824c556ff708afbd0de144373cac250135d892e178941fe7c690e78814c
+[student@master ~]$ 
+
+[student@master ~]$podman images
+
+
+
+Inventory Management:
+[student@master ~]$ vim serverlist 
+node1.example.com
+node2.example.com
+[student@master ~]$     
+    
+[student@master ~]$ ansible-navigator inventory -i serverlist --host node1.example.com -m stdout 
+{}
+[student@master ~]$ ansible-navigator inventory -i serverlist --host node4.example.com -m stdout 
+[WARNING]: Could not match supplied host pattern, ignoring: node4.example.com
+usage: ansible-inventory [-h] [--version] [-v] [-i INVENTORY] [-l SUBSET]
+                         [--vault-id VAULT_IDS]
+                         [-J | --vault-password-file VAULT_PASSWORD_FILES]
+
+
+[student@master ~]$ vim serverlist 
+[webservers]
+node1.example.com
+node2.example.com
+[dbservers]
+node3.example.com
+node4.example.com
+[appservers]
+node5.example.com
+node6.example.com
+[student@master ~]$
+
+
+[student@master ~]$ ansible-navigator inventory -i serverlist --graph webservers -m stdout 
+@webservers:
+  |--node1.example.com
+  |--node2.example.com
+[student@master ~]$ ansible-navigator inventory -i serverlist --graph dbservers -m stdout 
+@dbservers:
+  |--node3.example.com
+  |--node4.example.com
+[student@master ~]$ ansible-navigator inventory -i serverlist --graph appservers -m stdout 
+@appservers:
+  |--node5.example.com
+  |--node6.example.com
+[student@master ~]$ ansible-navigator inventory -i serverlist --graph all -m stdout 
+@all:
+  |--@ungrouped:
+  |--@webservers:
+  |  |--node1.example.com
+  |  |--node2.example.com
+  |--@dbservers:
+  |  |--node3.example.com
+  |  |--node4.example.com
+  |--@appservers:
+  |  |--node5.example.com
+  |  |--node6.example.com
+[student@master ~]$ 
+
+
+IPS, Ranges, NestedGroup:
+
+[student@master ~]$ cat serverlist
+nodea.example.com
+[webservers]
+node[a:f].example.com
+nodeb.example.com
+[dbservers]
+node3.example.com
+node4.example.com
+[appservers]
+node5.example.com
+node6.example.com
+[ips]
+192.168.10.[1:10]
+[teamservers]
+
+[servers:children]
+dbservers
+appservers
+teamservers
+[student@master ~]$ 
+
+IPS/Ranges:
+    
+[student@master ~]$ ansible-navigator inventory -i serverlist --graph ips -m stdout 
+@ips:
+  |--192.168.10.1
+  |--192.168.10.2
+  |--192.168.10.3
+  |--192.168.10.4
+  |--192.168.10.5
+  |--192.168.10.6
+  |--192.168.10.7
+  |--192.168.10.8
+  |--192.168.10.9
+  |--192.168.10.10
+[student@master ~]$ 
+
+
+
+Nested Groups:
+[student@master ~]$ ansible-navigator inventory -i serverlist --graph servers -m stdout 
+@servers:
+  |--@dbservers:
+  |  |--node3.example.com
+  |  |--node4.example.com
+  |--@appservers:
+  |  |--node5.example.com
+  |  |--node6.example.com
+  |--@teamservers:
+[student@master ~]$ 
+
+
+
+
+Ansible Configuration:
+[student@master ~]$ ansible-config init list
+----default values --------------
+
+
+
+
+
+[student@master ~]$ cat ansible.cfg
+[defaults]
+inventory=/home/student/serverlist
+remote_user=devops
+
+[privilege_escalation]
+become=True
+[student@master ~]$ 
+
+
+[student@master ~]$ ansible -m user -a 'name=u54 state=present' node1.example.com
+node1.example.com | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": true,
+    "comment": "",
+    "create_home": true,
+    "group": 1011,
+    "home": "/home/u54",
+    "name": "u54",
+    "shell": "/bin/bash",
+    "state": "present",
+    "system": false,
+    "uid": 1011
+}
+[student@master ~]$
+
+Verify:
+
+[root@node1 sudoers.d]# cat /etc/passwd | tail -1
+u54:x:1011:1011::/home/u54:/bin/bash
+[root@node1 sudoers.d]# 
+
+
+Playbook Creation:
+
+YAML Syntax/Basics
+Playbook Template
+
+[student@master playbooks]$ ansible-doc -l
+ansible.builtin.add_host               Add a host (and alternatively a group) to the ansible-playbook i...
+ansible.builtin.apt                    Manages apt-packages                                            
+ansible.builtin.apt_key                Add or remove an apt key                                        
+ansible.builtin.apt_repository         Add and remove APT repositories                                 
+ansible.builtin.assemble               Assemble configuration files from fragments                     
+ansible.builtin.assert                 Asserts given expressions are true                              
+ansible.builtin.async_status           Obtain status of asynchronous task                              
+ansible.builtin.blockinfile            Insert/update/remove a text block surrounded by marker lines    
+ansible.builtin.command                Execute commands on targets                                     
+ansible.builtin.copy                   Copy files to remote locations                               
+-----------
+
+
+[student@master playbooks]$ ansible-doc <Module name>
+[student@master playbooks]$ ansible-doc user
+> ANSIBLE.BUILTIN.USER    (/home/student/.local/lib/python3.9/site-packages/ansible/modules/user.py)
+
+        Manage user accounts and user attributes. For Windows targets, use the
+        [ansible.windows.win_user] module instead.
+
+ADDED IN: version 0.2 of ansible-core
+
+OPTIONS (= is mandatory):
+
+- append
+        If `true', add the user to the groups specified in `groups'.
+        If `false', user will only be added to the groups specified in `groups',
+        removing them from all other groups.
+        default: false
+        type: bool
+-----------------------------------------
+
+My first Playbook:
+
+[student@master ~]$ mkdir playbooks
+[student@master ~]$ cd playbooks
+
+[student@master ~]$ vim .vimrc
+set cursorcolumn
+set cursorline
+---------------------save -----------
+
+[student@master ~]$ cd playbooks
+[student@master playbooks]$ cp ../ansible.cfg .
+[student@master playbooks]$ pwd
+/home/student/playbooks
+[student@master playbooks]$ vim inventory 
+[webservers]
+node1.example.com
+[dbservers]
+node2.example.com
+[appservers]
+node5.example.com
+node6.example.com
+[ips]
+192.168.10.[1:10]
+[teamservers]
+
+[servers:children]
+dbservers
+appservers
+teamservers
+[student@master playbooks]$
+
+[student@master playbooks]$ vim ansible.cfg
+[defaults]
+inventory=/home/student/playbooks/inventory
+remote_user=devops
+
+
+[privilege_escalation]
+become=True
+become_method=sudo
+become_user=root
+become_ask_pass=False
+[student@master playbooks]$ 
+
+
+
+Creating Firstplay.yml
+
+
+[student@master playbooks]$ vim myfirstplay.yml 
+---
+- name: My first play
+  hosts: node1.example.com
+  tasks:
+  - name: My first task
+    ansible.builtin.user:
+      name: u72
+      state: present
+  - name: My second task
+    ansible.builtin.yum:
+      name: httpd
+      state: latest
+  - name: My third task
+    ansible.builtin.user:
+      name: u73
+      state: present
+  - name: My fourth task
+    ansible.builtin.yum:
+      name: dialog
+      state: present
+...
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run myfirstplay.yml -m stdout --syntax-check
+playbook: /home/student/playbooks/myfirstplay.yml
+[student@master playbooks]$ ansible-navigator run myfirstplay.yml -m stdout 
+
+PLAY [My first play] ***********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [My first task] ***********************************************************
+changed: [node1.example.com]
+
+TASK [My second task] **********************************************************
+changed: [node1.example.com]
+
+TASK [My third task] ***********************************************************
+changed: [node1.example.com]
+
+TASK [My fourth task] **********************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0  
+
+
+[student@master playbooks]$ ansible-navigator run myfirstplay.yml -m stdout 
+
+PLAY [My first play] ***********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [My first task] ***********************************************************
+ok: [node1.example.com]
+
+TASK [My second task] **********************************************************
+ok: [node1.example.com]
+
+TASK [My third task] ***********************************************************
+ok: [node1.example.com]
+
+TASK [My fourth task] **********************************************************
+ok: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+
+Errors can be ignored if required:
+
+
+[student@master playbooks]$ vim myfirstplay.yml 
+---
+- name: My first play
+  hosts: node1.example.com
+  ignore_errors: yes
+  tasks:
+  - name: My first task
+    ansible.builtin.user:
+      name: u78
+      state: present
+  - name: My second task
+    ansible.builtin.yum:
+      name: httpdi
+      state: latest
+  - name: My third task
+    ansible.builtin.user:
+      namei: u76
+      state: present
+  - name: My fourth task
+    ansible.builtin.yum:
+      name: dialog
+      state: present
+...
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run myfirstplay.yml -m stdout 
+
+PLAY [My first play] ***********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [My first task] ***********************************************************
+ok: [node1.example.com]
+
+TASK [My second task] **********************************************************
+fatal: [node1.example.com]: FAILED! => {"changed": false, "failures": ["No package httpdi available."], "msg": "Failed to install some of the specified packages", "rc": 1, "results": []}
+...ignoring
+
+TASK [My third task] ***********************************************************
+fatal: [node1.example.com]: FAILED! => {"changed": false, "msg": "missing required arguments: name"}
+...ignoring
+
+TASK [My fourth task] **********************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=2   
+[student@master playbooks]$ 
+
+
+
+Non-Idempotent Modules:
+    1. command
+    2. shell
+    
+[student@master playbooks]$ vim nonidempotent.yml 
+---
+- name: nonidem
+  hosts: node1.example.com
+  tasks:
+  - name: command module
+    ansible.builtin.command:  "hostname"
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run nonidempotent.yml -m stdout 
+
+PLAY [nonidem] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [command module] **********************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[student@master playbooks]$
+
+
+Executing once again, it will give changed status only 
+
+[student@master playbooks]$ ansible-navigator run nonidempotent.yml -m stdout 
+
+PLAY [nonidem] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [command module] **********************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+Shell Module:
+
+[student@master playbooks]$ vim nonidempotent.yml
+---
+- name: nonidem
+  hosts: node1.example.com
+  tasks:
+  - name: command module
+    ansible.builtin.shell:  "hostname"
+[student@master playbooks]$ ansible-navigator run nonidempotent.yml -m stdout 
+
+PLAY [nonidem] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [command module] **********************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ ansible-navigator run nonidempotent.yml -m stdout 
+
+PLAY [nonidem] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [command module] **********************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+Register/Debug:
+
+[student@master playbooks]$ vim nonidempotent.yml 
+---
+- name: nonidem
+  hosts: node1.example.com
+  tasks:
+  - name: command module
+    ansible.builtin.command:  "cat /etc/passwd"
+    register: output
+  - name: debug
+    ansible.builtin.debug:
+      var: output
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run nonidempotent.yml -m stdout 
+
+PLAY [nonidem] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [command module] **********************************************************
+changed: [node1.example.com]
+
+TASK [debug] *******************************************************************
+ok: [node1.example.com] => {
+    "output": {
+        "changed": true,
+        "cmd": [
+            "cat",
+            "/etc/passwd"
+        ],
+        "delta": "0:00:00.004687",
+        "end": "2026-03-05 21:38:34.699617",
+        "failed": false,
+        "msg": "",
+        "rc": 0,
+        "start": "2026-03-05 21:38:34.694930",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "root:x:0:0:root:/root:/bin/bash\nbin:x:1:1:bin:/bin:/sbin/nologin\ndaemon:x:2:2:daemon:/sbin:/sbin/nologin\nadm:x:3:4:adm:/var/adm:/sbin/nologin\nlp:x:4:7:lp:/var/spool/lpd:/sbin/nologin\nsync:x:5:0:sync:/sbin:/bin/sync\nshutdown:x:6:0:shutdown:/sbin:/sbin/shutdown\nhalt:x:7:0:halt:/sbin:/sbin/halt\nmail:x:8:12:mail:/var/spool/mail:/sbin/nologin\noperator:x:11:0:operator:/root:/sbin/nologin\ngames:x:12:100:games:/usr/games:/sbin/nologin\nftp:x:14:50:FTP User:/var/ftp:/sbin/nologin\nnobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin\ntss:x:59:59:Account used for TPM access:/:/usr/sbin/nologin\nsystemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin\ndbus:x:81:81:System message bus:/:/sbin/nologin\npolkitd:x:998:996:User for polkitd:/:/sbin/nologin\navahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin\ngeoclue:x:997:995:User for geoclue:/var/lib/geoclue:/sbin/nologin\nrtkit:x:172:172:RealtimeKit:/:/sbin/nologin\nlibstoragemgmt:x:992:992:daemon account for libstoragemgmt:/:/usr/sbin/nologin\ncolord:x:990:990:User for colord:/var/lib/colord:/sbin/nologin\nsssd:x:989:989:User for sssd:/:/sbin/nologin\nclevis:x:988:988:Clevis Decryption Framework unprivileged user:/var/cache/clevis:/usr/sbin/nologin\nsetroubleshoot:x:987:987:SELinux troubleshoot server:/var/lib/setroubleshoot:/usr/sbin/nologin\npipewire:x:986:986:PipeWire System Daemon:/run/pipewire:/usr/sbin/nologin\nflatpak:x:985:985:User for flatpak system helper:/:/sbin/nologin\ngdm:x:42:42::/var/lib/gdm:/sbin/nologin\ngnome-initial-setup:x:984:983::/run/gnome-initial-setup/:/sbin/nologin\nchrony:x:983:982:chrony system user:/var/lib/chrony:/sbin/nologin\nsshd:x:74:74:Privilege-separated SSH:/usr/share/empty.sshd:/usr/sbin/nologin\ndnsmasq:x:982:981:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/usr/sbin/nologin\ntcpdump:x:72:72::/:/sbin/nologin\nstudent:x:1000:1000:student:/home/student:/bin/bash\nxrdp:x:981:980:Unprivileged xrdp user:/run/xrdp:/sbin/nologin\ndevop
+s:x:1001:1001::/home/devops:/bin/bash\nu1:x:1002:1002::/home/u1:/bin/bash\nu2:x:1003:1003::/home/u2:/bin/bash\nu10:x:1004:1006::/home/u10:/bin/bash\nu30:x:1005:1007::/home/u30:/bin/bash\nu31:x:1006:1008::/home/u31:/bin/bash\nu32:x:1007:1009::/home/u32:/bin/bash\nu33:x:1008:1010::/home/u33:/bin/bash\nu41:x:1009:1011::/home/u41:/bin/bash\nu35:x:1010:1012::/home/u35:/bin/bash\nmurali:x:1011:1013::/home/murali:/bin/bash\nu50:x:1012:1014::/home/u50:/bin/bash\nu51:x:1013:1015::/home/u51:/bin/bash\nu52:x:1014:1016::/home/u52:/bin/bash\nu37:x:1015:1017::/home/u37:/bin/bash\nmurali2:x:1016:1018::/home/murali2:/bin/bash\nu38:x:1017:1019::/home/u38:/bin/bash\nu60:x:1018:1020::/home/u60:/bin/bash\nu70:x:1019:1021::/home/u70:/bin/bash\napache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin\nu71:x:1020:1022::/home/u71:/bin/bash\nu72:x:1021:1023::/home/u72:/bin/bash\nu73:x:1022:1024::/home/u73:/bin/bash\nu74:x:1023:1025::/home/u74:/bin/bash\nu75:x:1024:1026::/home/u75:/bin/bash\nu78:x:1025:1027::/home/u78:/bin/bash",
+        "stdout_lines": [
+            "root:x:0:0:root:/root:/bin/bash",
+            "bin:x:1:1:bin:/bin:/sbin/nologin",
+            "daemon:x:2:2:daemon:/sbin:/sbin/nologin",
+            "adm:x:3:4:adm:/var/adm:/sbin/nologin",
+            "lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin",
+            "sync:x:5:0:sync:/sbin:/bin/sync",
+            "shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown",
+            "halt:x:7:0:halt:/sbin:/sbin/halt",
+            "mail:x:8:12:mail:/var/spool/mail:/sbin/nologin",
+            "operator:x:11:0:operator:/root:/sbin/nologin",
+            "games:x:12:100:games:/usr/games:/sbin/nologin",
+            "ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin",
+            "nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin",
+            "tss:x:59:59:Account used for TPM access:/:/usr/sbin/nologin",
+            "systemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin",
+            "dbus:x:81:81:System message bus:/:/sbin/nologin",
+            "polkitd:x:998:996:User for polkitd:/:/sbin/nologin",
+            "avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin",
+            "geoclue:x:997:995:User for geoclue:/var/lib/geoclue:/sbin/nologin",
+            "rtkit:x:172:172:RealtimeKit:/:/sbin/nologin",
+            "libstoragemgmt:x:992:992:daemon account for libstoragemgmt:/:/usr/sbin/nologin",
+            "colord:x:990:990:User for colord:/var/lib/colord:/sbin/nologin",
+            "sssd:x:989:989:User for sssd:/:/sbin/nologin",
+            "clevis:x:988:988:Clevis Decryption Framework unprivileged user:/var/cache/clevis:/usr/sbin/nologin",
+            "setroubleshoot:x:987:987:SELinux troubleshoot server:/var/lib/setroubleshoot:/usr/sbin/nologin",
+            "pipewire:x:986:986:PipeWire System Daemon:/run/pipewire:/usr/sbin/nologin",
+            "flatpak:x:985:985:User for flatpak system helper:/:/sbin/nologin",
+            "gdm:x:42:42::/var/lib/gdm:/sbin/nologin",
+            "gnome-initial-setup:x:984:983::/run/gnome-initial-setup/:/sbin/nologin",
+            "chrony:x:983:982:chrony system user:/var/lib/chrony:/sbin/nologin",
+            "sshd:x:74:74:Privilege-separated SSH:/usr/share/empty.sshd:/usr/sbin/nologin",
+            "dnsmasq:x:982:981:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/usr/sbin/nologin",
+            "tcpdump:x:72:72::/:/sbin/nologin",
+            "student:x:1000:1000:student:/home/student:/bin/bash",
+            "xrdp:x:981:980:Unprivileged xrdp user:/run/xrdp:/sbin/nologin",
+            "devops:x:1001:1001::/home/devops:/bin/bash",
+            "u1:x:1002:1002::/home/u1:/bin/bash",
+            "u2:x:1003:1003::/home/u2:/bin/bash",
+            "u10:x:1004:1006::/home/u10:/bin/bash",
+            "u30:x:1005:1007::/home/u30:/bin/bash",
+            "u31:x:1006:1008::/home/u31:/bin/bash",
+            "u32:x:1007:1009::/home/u32:/bin/bash",
+            "u33:x:1008:1010::/home/u33:/bin/bash",
+            "u41:x:1009:1011::/home/u41:/bin/bash",
+            "u35:x:1010:1012::/home/u35:/bin/bash",
+            "murali:x:1011:1013::/home/murali:/bin/bash",
+            "u50:x:1012:1014::/home/u50:/bin/bash",
+            "u51:x:1013:1015::/home/u51:/bin/bash",
+            "u52:x:1014:1016::/home/u52:/bin/bash",
+            "u37:x:1015:1017::/home/u37:/bin/bash",
+            "murali2:x:1016:1018::/home/murali2:/bin/bash",
+            "u38:x:1017:1019::/home/u38:/bin/bash",
+            "u60:x:1018:1020::/home/u60:/bin/bash",
+            "u70:x:1019:1021::/home/u70:/bin/bash",
+            "apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin",
+            "u71:x:1020:1022::/home/u71:/bin/bash",
+            "u72:x:1021:1023::/home/u72:/bin/bash",
+            "u73:x:1022:1024::/home/u73:/bin/bash",
+            "u74:x:1023:1025::/home/u74:/bin/bash",
+            "u75:x:1024:1026::/home/u75:/bin/bash",
+            "u78:x:1025:1027::/home/u78:/bin/bash"
+        ]
+    }
+}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+ 
+With Command Module - Fork child process - throws error 
+   
+[student@master playbooks]$ vim nonidempotent.yml
+---
+- name: nonidem
+  hosts: node1.example.com
+  tasks:
+  - name: command module
+    ansible.builtin.command:  "cat /etc/passwd | grep root"
+    register: output
+  - name: debug
+    ansible.builtin.debug:
+      var: output
+[student@master playbooks]$ 
+
+ 
+ 
+[student@master playbooks]$ ansible-navigator run nonidempotent.yml -m stdout 
+
+PLAY [nonidem] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [command module] **********************************************************
+fatal: [node1.example.com]: FAILED! => {"changed": true, "cmd": ["cat", "/etc/passwd", "|", "grep", "root"], "delta": "0:00:00.005654", "end": "2026-03-05 21:42:53.392786", "msg": "non-zero return code", "rc": 1, "start": "2026-03-05 21:42:53.387132", "stderr": "cat: '|': No such file or directory\ncat: grep: No such file or directory\ncat: root: No such file or directory", "stderr_lines": ["cat: '|': No such file or directory", "cat: grep: No such file or directory", "cat: root: No such file or directory"], "stdout": "root:x:0:0:root:/root:/bin/bash\nbin:x:1:1:bin:/bin:/sbin/nologin\ndaemon:x:2:2:daemon:/sbin:/sbin/nologin\nadm:x:3:4:adm:/var/adm:/sbin/nologin\nlp:x:4:7:lp:/var/spool/lpd:/sbin/nologin\nsync:x:5:0:sync:/sbin:/bin/sync\nshutdown:x:6:0:shutdown:/sbin:/sbin/shutdown\nhalt:x:7:0:halt:/sbin:/sbin/halt\nmail:x:8:12:mail:/var/spool/mail:/sbin/nologin\noperator:x:11:0:operator:/root:/sbin/nologin\ngames:x:12:100:games:/usr/games:/sbin/nologin\nftp:x:14:50:FTP User:/var/ftp:/sbin/nologin\nnobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin\ntss:x:59:59:Account used for TPM access:/:/usr/sbin/nologin\nsystemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin\ndbus:x:81:81:System message bus:/:/sbin/nologin\npolkitd:x:998:996:User for polkitd:/:/sbin/nologin\navahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin\ngeoclue:x:997:995:User for geoclue:/var/lib/geoclue:/sbin/nologin\nrtkit:x:172:172:RealtimeKit:/:/sbin/nologin\nlibstoragemgmt:x:992:992:daemon account for libstoragemgmt:/:/usr/sbin/nologin\ncolord:x:990:990:User for colord:/var/lib/colord:/sbin/nologin\nsssd:x:989:989:User for sssd:/:/sbin/nologin\nclevis:x:988:988:Clevis Decryption Framework unprivileged user:/var/cache/clevis:/usr/sbin/nologin\nsetroubleshoot:x:987:987:SELinux troubleshoot server:/var/lib/setroubleshoot:/usr/sbin/nologin\npipewire:x:986:986:PipeWire System Daemon:/run/pipewire:/usr/sbin/nologin\nflatpak:x:985:985:User for flatpak system helper:/:/sbi
+n/nologin\ngdm:x:42:42::/var/lib/gdm:/sbin/nologin\ngnome-initial-setup:x:984:983::/run/gnome-initial-setup/:/sbin/nologin\nchrony:x:983:982:chrony system user:/var/lib/chrony:/sbin/nologin\nsshd:x:74:74:Privilege-separated SSH:/usr/share/empty.sshd:/usr/sbin/nologin\ndnsmasq:x:982:981:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/usr/sbin/nologin\ntcpdump:x:72:72::/:/sbin/nologin\nstudent:x:1000:1000:student:/home/student:/bin/bash\nxrdp:x:981:980:Unprivileged xrdp user:/run/xrdp:/sbin/nologin\ndevops:x:1001:1001::/home/devops:/bin/bash\nu1:x:1002:1002::/home/u1:/bin/bash\nu2:x:1003:1003::/home/u2:/bin/bash\nu10:x:1004:1006::/home/u10:/bin/bash\nu30:x:1005:1007::/home/u30:/bin/bash\nu31:x:1006:1008::/home/u31:/bin/bash\nu32:x:1007:1009::/home/u32:/bin/bash\nu33:x:1008:1010::/home/u33:/bin/bash\nu41:x:1009:1011::/home/u41:/bin/bash\nu35:x:1010:1012::/home/u35:/bin/bash\nmurali:x:1011:1013::/home/murali:/bin/bash\nu50:x:1012:1014::/home/u50:/bin/bash\nu51:x:1013:1015::/home/u51:/bin/bash\nu52:x:1014:1016::/home/u52:/bin/bash\nu37:x:1015:1017::/home/u37:/bin/bash\nmurali2:x:1016:1018::/home/murali2:/bin/bash\nu38:x:1017:1019::/home/u38:/bin/bash\nu60:x:1018:1020::/home/u60:/bin/bash\nu70:x:1019:1021::/home/u70:/bin/bash\napache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin\nu71:x:1020:1022::/home/u71:/bin/bash\nu72:x:1021:1023::/home/u72:/bin/bash\nu73:x:1022:1024::/home/u73:/bin/bash\nu74:x:1023:1025::/home/u74:/bin/bash\nu75:x:1024:1026::/home/u75:/bin/bash\nu78:x:1025:1027::/home/u78:/bin/bash", "stdout_lines": ["root:x:0:0:root:/root:/bin/bash", "bin:x:1:1:bin:/bin:/sbin/nologin", "daemon:x:2:2:daemon:/sbin:/sbin/nologin", "adm:x:3:4:adm:/var/adm:/sbin/nologin", "lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin", "sync:x:5:0:sync:/sbin:/bin/sync", "shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown", "halt:x:7:0:halt:/sbin:/sbin/halt", "mail:x:8:12:mail:/var/spool/mail:/sbin/nologin", "operator:x:11:0:operator:/root:/sbin/nologin", "games:x:12:100:games:/usr/games:/sbin/nologin
+", "ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin", "nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin", "tss:x:59:59:Account used for TPM access:/:/usr/sbin/nologin", "systemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin", "dbus:x:81:81:System message bus:/:/sbin/nologin", "polkitd:x:998:996:User for polkitd:/:/sbin/nologin", "avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin", "geoclue:x:997:995:User for geoclue:/var/lib/geoclue:/sbin/nologin", "rtkit:x:172:172:RealtimeKit:/:/sbin/nologin", "libstoragemgmt:x:992:992:daemon account for libstoragemgmt:/:/usr/sbin/nologin", "colord:x:990:990:User for colord:/var/lib/colord:/sbin/nologin", "sssd:x:989:989:User for sssd:/:/sbin/nologin", "clevis:x:988:988:Clevis Decryption Framework unprivileged user:/var/cache/clevis:/usr/sbin/nologin", "setroubleshoot:x:987:987:SELinux troubleshoot server:/var/lib/setroubleshoot:/usr/sbin/nologin", "pipewire:x:986:986:PipeWire System Daemon:/run/pipewire:/usr/sbin/nologin", "flatpak:x:985:985:User for flatpak system helper:/:/sbin/nologin", "gdm:x:42:42::/var/lib/gdm:/sbin/nologin", "gnome-initial-setup:x:984:983::/run/gnome-initial-setup/:/sbin/nologin", "chrony:x:983:982:chrony system user:/var/lib/chrony:/sbin/nologin", "sshd:x:74:74:Privilege-separated SSH:/usr/share/empty.sshd:/usr/sbin/nologin", "dnsmasq:x:982:981:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/usr/sbin/nologin", "tcpdump:x:72:72::/:/sbin/nologin", "student:x:1000:1000:student:/home/student:/bin/bash", "xrdp:x:981:980:Unprivileged xrdp user:/run/xrdp:/sbin/nologin", "devops:x:1001:1001::/home/devops:/bin/bash", "u1:x:1002:1002::/home/u1:/bin/bash", "u2:x:1003:1003::/home/u2:/bin/bash", "u10:x:1004:1006::/home/u10:/bin/bash", "u30:x:1005:1007::/home/u30:/bin/bash", "u31:x:1006:1008::/home/u31:/bin/bash", "u32:x:1007:1009::/home/u32:/bin/bash", "u33:x:1008:1010::/home/u33:/bin/bash", "u41:x:1009:1011::/home/u41:/bin/bash", "u35:x:1010:1012::/home/u35:/bin/bash", "murali:x:101
+1:1013::/home/murali:/bin/bash", "u50:x:1012:1014::/home/u50:/bin/bash", "u51:x:1013:1015::/home/u51:/bin/bash", "u52:x:1014:1016::/home/u52:/bin/bash", "u37:x:1015:1017::/home/u37:/bin/bash", "murali2:x:1016:1018::/home/murali2:/bin/bash", "u38:x:1017:1019::/home/u38:/bin/bash", "u60:x:1018:1020::/home/u60:/bin/bash", "u70:x:1019:1021::/home/u70:/bin/bash", "apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin", "u71:x:1020:1022::/home/u71:/bin/bash", "u72:x:1021:1023::/home/u72:/bin/bash", "u73:x:1022:1024::/home/u73:/bin/bash", "u74:x:1023:1025::/home/u74:/bin/bash", "u75:x:1024:1026::/home/u75:/bin/bash", "u78:x:1025:1027::/home/u78:/bin/bash"]}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+Please review the log for errors.
+[student@master playbooks]$ 
+
+
+ With Shell Module:
+       
+ [student@master playbooks]$ vim nonidempotent.yml
+---
+- name: nonidem
+  hosts: node1.example.com
+  tasks:
+  - name: command module
+    ansible.builtin.shell:  "cat /etc/passwd | grep root"
+    register: output
+  - name: debug
+    ansible.builtin.debug:
+      var: output
+[student@master playbooks]$ 
+
+[student@master playbooks]$ ansible-navigator run nonidempotent.yml -m stdout 
+
+PLAY [nonidem] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [command module] **********************************************************
+changed: [node1.example.com]
+
+TASK [debug] *******************************************************************
+ok: [node1.example.com] => {
+    "output": {
+        "changed": true,
+        "cmd": "cat /etc/passwd | grep root",
+        "delta": "0:00:00.005523",
+        "end": "2026-03-05 21:43:48.775538",
+        "failed": false,
+        "msg": "",
+        "rc": 0,
+        "start": "2026-03-05 21:43:48.770015",
+        "stderr": "",
+        "stderr_lines": [],
+        "stdout": "root:x:0:0:root:/root:/bin/bash\noperator:x:11:0:operator:/root:/sbin/nologin",
+        "stdout_lines": [
+            "root:x:0:0:root:/root:/bin/bash",
+            "operator:x:11:0:operator:/root:/sbin/nologin"
+        ]
+    } 
+}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$
+   
+
+Task:11:CompletionStatus: Satwika,ketan,Mahesh,mounika,Chandan,Sakshi,Deepak,Ujjal,Ghulam,jyothi, Randip
+
+
+Task:12
+Debug:
+
+VAR:
+[student@master playbooks]$ vim debug.yml 
+- name: debug
+  hosts: node1.example.com
+  tasks:
+  - name: user createion
+    ansible.builtin.user:
+      name: u85
+      state: present
+    register: myout
+  - name: debug 
+    ansible.builtin.debug:
+      var: myout 
+    
+[student@master playbooks]$ 
+
+[student@master playbooks]$ ansible-navigator run debug.yml -m stdout
+
+PLAY [debug] *******************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [user createion] **********************************************************
+changed: [node1.example.com]
+
+TASK [debug] *******************************************************************
+ok: [node1.example.com] => {
+    "myout": {
+        "changed": true,
+        "comment": "",
+        "create_home": true,
+        "failed": false,
+        "group": 1029,
+        "home": "/home/u85",
+        "name": "u85",
+        "shell": "/bin/bash",
+        "state": "present",
+        "system": false,
+        "uid": 1027
+    }
+}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$
+
+
+MSG:
+
+[student@master playbooks]$ vim debug2.yml 
+- name: debug
+  hosts: node1.example.com
+  tasks:
+  - name: user createion
+    ansible.builtin.user:
+      name: u85
+      state: present
+    register: myout
+  - name: debug 
+    ansible.builtin.debug:
+      msg: Is Changed happened? "{{ myout.changed }}"
+    
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run debug2.yml -m stdout
+
+PLAY [debug] *******************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [user createion] **********************************************************
+ok: [node1.example.com]
+
+TASK [debug] *******************************************************************
+ok: [node1.example.com] => {
+    "msg": "Is Changed happened? \"False\""
+}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$
+
+
+
+
+
+
+
+29Oct26
+
+VARIABLES:
+
+1. HOST Scope
+2. Play Scope
+3. Global Scope
+
+1. HOST Scope:
+
+
+GROUP_VARS:
+    
+[student@master playbooks]$ vim inventory 
+[webservers]
+node1.example.com 
+[dbservers]
+node2.example.com
+[ips]
+192.168.10.[1:8]
+
+[servers:children]
+webservers
+dbservers
+
+[servers:vars]
+package=httpd
+[student@master playbooks]$ 
+
+[student@master playbooks]$ mkdir group_vars
+
+[student@master playbooks]$ cd group_vars
+
+[student@master group_vars]$ vim servers 
+package: zip
+[student@master group_vars]$ 
+
+
+While executing, chances are there to install with either httpd or zip package on both the nodes:
+    
+
+[student@master playbooks]$ ansible-navigator run inv-variable.yml -m stdout 
+
+PLAY [inv-variable] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node2.example.com]
+ok: [node1.example.com]
+
+TASK [Installing package "zip"] ************************************************
+changed: [node1.example.com]
+changed: [node2.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+node2.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+Installed with zip package which shows group_vars has higher priority than the inventory group:
+
+
+HOST_VARS:
+
+[student@master playbooks]$ vim  inventory 
+[webservers]
+node1.example.com   package=postfix
+[dbservers]
+node2.example.com
+[ips]
+192.168.10.[1:8]
+
+[servers:children]
+webservers
+dbservers
+
+[servers:vars]
+package=httpd
+[student@master playbooks]$ mkdir host_vars
+
+[student@master host_vars]$ pwd
+/home/student/playbooks/host_vars
+[student@master host_vars]$ vim node1.example.com 
+package: zsh
+[student@master host_vars]$ 
+
+
+[student@master playbooks]$ vim inv-variable.yml 
+- name: inv-variable
+  hosts: node1.example.com
+  tasks:
+  - name: Installing package "{{ package }}"
+    ansible.builtin.yum:
+      name: "{{ package }}"
+      state: latest
+[student@master playbooks]$ 
+
+
+Chances are there to install either with postfix or with zsh on the node node1.example.com
+
+[student@master playbooks]$ ansible-navigator run inv-variable.yml -m stdout
+
+PLAY [inv-variable] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [Installing package "zsh"] ************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+Task:13:CompletionStatus:Satwika,ketan,Sakshi,Mathi,Ravi,Ghulam,Chandan,Mahesh,mounika,siva,Deepak,Ananth,akshay,jyothia,Randip
+    
+Task:14
+2. Play Scope:
+vars:
+    
+[student@master playbooks]$ cat group_vars/servers 
+package: zip
+[student@master playbooks]$ cat host_vars/node1.example.com 
+package: zsh
+[student@master playbooks]$ 
+
+[student@master playbooks]$ vim inv-variable.yml
+- name: inv-variable
+  hosts: servers
+  vars:
+    package: ftp
+  tasks: 
+  - name: Installing package "{{ package }}"
+    ansible.builtin.yum:
+      name: "{{ package }}"
+      state: latest
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run inv-variable.yml -m stdout 
+
+PLAY [inv-variable] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+ok: [node2.example.com]
+
+TASK [Installing package "ftp"] ************************************************
+changed: [node1.example.com]
+changed: [node2.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+node2.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+Verify:
+Node1:
+[root@node1 ~]# yum list installed  httpd postfix zsh zip ftp
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use "rhc" or "subscription-manager" to register.
+
+Installed Packages
+ftp.x86_64                             0.17-89.el9                             @appstream
+[root@node1 ~]# 
+
+Node2:
+[root@node2 ~]# yum list installed  httpd postfix zsh zip ftp
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use "rhc" or "subscription-manager" to register.
+
+Installed Packages
+ftp.x86_64                             0.17-89.el9                             @appstream
+[root@node2 ~]# 
+
+Which shows that vars in Playscope has higher priority than Host Scope:
+
+
+vars_files:
+
+[student@master playbooks]$ vim inv-ps2-variable.yml
+- name: inv-variable
+  hosts: servers
+  vars:
+    package: ftp
+  vars_files:
+    - varfile
+  tasks:
+  - name: Installing package "{{ package }}"
+    ansible.builtin.yum:
+      name: "{{ package }}"
+      state: latest
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ vim varfile 
+package: lftp
+[student@master playbooks]$ 
+
+[student@master playbooks]$ ansible-navigator run inv-ps2-variable.yml -m stdout 
+
+PLAY [inv-variable] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+ok: [node2.example.com]
+
+TASK [Installing package "lftp"] ***********************************************
+changed: [node1.example.com]
+changed: [node2.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+node2.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+Which shows that vars_files has higher priority than anything we have discussed previously
+
+
+3. Global Scope:
+ 
+ Inspite of all the previous cases are availbla, when we pass the variable through the command line, which will be considered with highest Priority
+
+[student@master playbooks]$ ansible-navigator run inv-ps2-variable.yml -m stdout -e 'package=dovecot'
+
+PLAY [inv-variable] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node2.example.com]
+ok: [node1.example.com]
+
+TASK [Installing package "dovecot"] ********************************************
+changed: [node1.example.com]
+changed: [node2.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+node2.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+Verify:
+Node1:
+
+[root@node1 ~]# yum list installed  httpd postfix zsh zip ftp lftp dovecot
+Updating Subscription Management repositories.
+Unable to read consumer identity
+This system is not registered with an entitlement server. You can use "rhc" or "subscription-manager" to register.
+Installed Packages
+dovecot.x86_64                         1:2.3.16-16.el9                         @appstream
+[root@node1 ~]# 
+
+
+Node2:
+[root@node2 ~]# yum list installed  httpd postfix zsh zip ftp lftp dovecot
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use "rhc" or "subscription-manager" to register.
+Installed Packages
+dovecot.x86_64                         1:2.3.16-16.el9                         @appstream
+[root@node2 ~]# 
+
+
+FACTS:
+
+[student@master ~]$ vim facts.yml 
+- name: Fact dump
+  hosts: node1.example.com
+  tasks:
+    - name: Print all facts
+      ansible.builtin.debug:
+        var: ansible_facts
+[student@master ~]$ 
+
+
+[student@master ~]$ ansible-navigator run facts.yml -m stdout
+
+PLAY [Fact dump] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [Print all facts] *********************************************************
+ok: [node1.example.com] => {
+    "ansible_facts": {
+        "all_ipv4_addresses": [
+            "10.0.5.2"
+        ],
+        "all_ipv6_addresses": [
+------------------------output truncated --=---------------------------------------------
+
+
+
+[student@master ~]$ vim facts2.yml 
+- name: Fact dump
+  hosts: node1.example.com
+  tasks:
+    - name: Print all facts
+      ansible.builtin.debug:
+        msg: |
+             My Arch is "{{ ansible_facts['architecture'] }}"
+             My IPV4 Address is "{{ ansible_facts.['default_ipv4']['address'] }}"
+[student@master ~]$ 
+
+[student@master ~]$ ansible-navigator run facts2.yml -m stdout
+
+PLAY [Fact dump] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [Print all facts] *********************************************************
+ok: [node1.example.com] => {
+    "msg": "My Arch is \"x86_64\"\nMy IPV4 Address is \"10.0.5.2\"\n"
+}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master ~]$ 
+
+
+If you don't want to use facts:
+
+[student@master ~]$ vim facts3.yml 
+- name: Fact dump
+  hosts: node1.example.com
+  gather_facts: false
+  tasks:
+    - name: Print all facts
+      ansible.builtin.debug:
+        msg: |
+             My Arch is "{{ ansible_facts['architecture'] }}"
+             My IPV4 Address is "{{ ansible_facts.default_ipv4.address }}"
+[student@master ~]$ 
+
+[student@master ~]$ ansible-navigator run facts3.yml -m stdout
+
+PLAY [Fact dump] ***************************************************************
+
+TASK [Print all facts] *********************************************************
+fatal: [node1.example.com]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'dict object' has no attribute 'architecture'. 'dict object' has no attribute 'architecture'\n\nThe error appears to be in '/home/student/facts3.yml': line 5, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n  tasks:\n    - name: Print all facts\n      ^ here\n"}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+Please review the log for errors.
+[student@master ~]$
+
+
+
+
+
+Custom_Facts:
+
+[student@master ~]$ vim facts4.yml 
+- name: Fact dump
+  hosts: node1.example.com
+  tasks:
+    - name: Print all facts
+      ansible.builtin.debug:
+        msg: My criticality is "{{ ansible_local['custom']['criticality']['crit'] }}"
+[student@master ~]$ 
+
+Creating path in node1:
+
+[root@node1 ~]# mkdir -p /etc/ansible/facts.d
+[root@node1 ~]# cd /etc/ansible/facts.d
+[root@node1 facts.d]# vim custom.fact
+[criticality]
+crit: 5
+[root@node1 facts.d]# 
+
+
+[student@master ~]$ ansible-navigator run facts4.yml -m stdout
+
+PLAY [Fact dump] ***************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [Print all facts] *********************************************************
+ok: [node1.example.com] => {
+    "msg": "My criticality is \"5\""
+}
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master ~]$
+
+Task:18:CompletionStatus:siva,jyothi,Sakshi,Satwika,Deepak,mounika,Mathi,Ravi,Chandan,Ghulam, Randip
+
+
+COPY:
+
+[student@master playbooks]$ vim copy.yml 
+- name: copy Module
+  hosts: node1.example.com
+  tasks:
+  - name: copy module
+    ansible.builtin.copy:
+      src: mysource.txt
+      dest: /mnt
+
+[student@master playbooks]$ 
+
+[student@master playbooks]$ ansible-navigator run copy.yml -m stdout 
+
+PLAY [copy Module] *************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [copy module] *************************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ ansible-navigator run copy.yml -m stdout 
+
+PLAY [copy Module] *************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [copy module] *************************************************************
+ok: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$
+
+
+Lineinfile:
+
+[root@node1 ~]# cat /etc/httpd/conf/httpd.conf | grep ^ServerAdmin
+ServerAdmin root@localhost
+[root@node1 ~]#
+
+[student@master playbooks]$ vim lineinfile.yml 
+- name: lineinfile Module
+  hosts: node1.example.com
+  tasks:
+  - name: lineinfile module
+    ansible.builtin.lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: 'ServerAdmin murali@gmail.com'
+[student@master playbooks]$ 
+
+[student@master playbooks]$ ansible-navigator run lineinfile.yml -m stdout
+
+PLAY [lineinfile Module] *******************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [lineinfile module] *******************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+[root@node1 ~]# cat /etc/httpd/conf/httpd.conf | grep ^ServerAdmin
+ServerAdmin murali@gmail.com
+[root@node1 ~]# 
+
+
+File Creation:
+
+
+[student@master playbooks]$ cat file.yml 
+- name: file creation
+  hosts: node1.example.com
+  tasks:
+  - name: file creation
+    ansible.builtin.file:
+      path: /mnt/file-from-ansible
+      state: touch 
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run file.yml -m stdout 
+
+PLAY [file creation] ***********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [file creation] ***********************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$
+
+
+Template:
+    
+[student@master playbooks]$ cat template.yml 
+- name: template
+  hosts: node1.example.com
+  tasks:
+  - name: template
+    ansible.builtin.template:
+      src: file-data
+      dest: /mnt
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run template.yml -m stdout 
+
+PLAY [template] ****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [template] ****************************************************************
+changed: [node1.example.com]
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$
+
+Loop:
+[student@master playbooks]$ vim usercreate.yml 
+- name: users create
+  hosts: node1.example.com
+  tasks:
+  - name: users creation
+    ansible.builtin.user:
+      name: "{{ item }}"  
+      state: present
+    loop: 
+      - user30
+      - user31
+      - user32
+[student@master playbooks]$
+
+
+[student@master playbooks]$ ansible-navigator run usercreate.yml -m stdout 
+
+PLAY [users create] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [users creation] **********************************************************
+changed: [node1.example.com] => (item=user30)
+changed: [node1.example.com] => (item=user31)
+changed: [node1.example.com] => (item=user32)
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+
+[student@master playbooks]$ cat usercreate.yml
+- name: users create
+  hosts: node1.example.com
+  vars:
+    users:
+      - user34
+      - user35
+      - user36
+  tasks:
+  - name: users creation
+    ansible.builtin.user:
+      name: "{{ item }}"  
+      state: present
+    loop: "{{ users }}" 
+[student@master playbooks]$ 
+
+
+ListofHash:
+    
+[student@master playbooks]$ cat usercreate.yml 
+- name: users create
+  hosts: node1.example.com
+  vars_files:
+    - userfile-ext
+  tasks:
+    - name: users creation
+      ansible.builtin.user:
+        name: "{{ item.username }}"  
+        uid: "{{ item.userid }}"
+        shell: "{{ item.usershell }}"
+        state: present
+      loop: "{{ users }}" 
+[student@master playbooks]$ 
+
+[student@master playbooks]$ cat userfile-ext 
+users:
+  - username: user60
+    userid: 2010
+    usershell: /bin/sh
+  - username: user61
+    userid: 2011
+    usershell: /bin/sh
+  - username: user62
+    userid: 2012
+    usershell: /bin/bash
+[student@master playbooks]$ 
+
+[student@master playbooks]$ ansible-navigator run usercreate.yml -m stdout 
+
+PLAY [users create] ************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [users creation] **********************************************************
+changed: [node1.example.com] => (item={'username': 'user60', 'userid': 2010, 'usershell': '/bin/sh'})
+changed: [node1.example.com] => (item={'username': 'user61', 'userid': 2011, 'usershell': '/bin/sh'})
+changed: [node1.example.com] => (item={'username': 'user62', 'userid': 2012, 'usershell': '/bin/bash'})
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DiskSize:
+
+[student@master playbooks]$ cat disksize.yml 
+- name: disk size based install
+  hosts: node1.example.com
+  tasks:
+  - name: install mariadb-server if enough space on root
+    ansible.builtin.dnf:
+      name: mariadb-server
+      state: latest
+    loop: "{{ ansible_facts['mounts'] }}"
+    when: item['mount'] == "/" and item['size_available'] > 300000000
+[student@master playbooks]$ 
+
+[student@master playbooks]$ ansible-navigator run disksize.yml -m stdout 
+
+PLAY [disk size based install] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node1.example.com]
+
+TASK [install mariadb-server if enough space on root] **************************
+changed: [node1.example.com] => (item={'mount': '/', 'device': '/dev/mapper/rl-root', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 65670217728, 'size_available': 59100774400, 'block_size': 4096, 'block_total': 16032768, 'block_available': 14428900, 'block_used': 1603868, 'inode_total': 32098304, 'inode_available': 31951293, 'inode_used': 147011, 'uuid': 'feed3081-b398-4432-b1fe-10524d40b54b'})
+skipping: [node1.example.com] => (item={'mount': '/home', 'device': '/dev/mapper/rl-home', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 32027705344, 'size_available': 31689166848, 'block_size': 4096, 'block_total': 7819264, 'block_available': 7736613, 'block_used': 82651, 'inode_total': 15671296, 'inode_available': 15670334, 'inode_used': 962, 'uuid': '5c88f559-9955-45cc-9903-52c2dd43b163'}) 
+skipping: [node1.example.com] => (item={'mount': '/boot', 'device': '/dev/sda1', 'fstype': 'xfs', 'options': 'rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota', 'size_total': 1006632960, 'size_available': 387260416, 'block_size': 4096, 'block_total': 245760, 'block_available': 94546, 'block_used': 151214, 'inode_total': 524288, 'inode_available': 523914, 'inode_used': 374, 'uuid': 'f7a0b083-b5ca-4feb-b06f-86bf3eec2855'}) 
+skipping: [node1.example.com] => (item={'mount': '/run/media/root/Rocky-9-5-x86_64-dvd', 'device': '/dev/sr0', 'fstype': 'iso9660', 'options': 'ro,nosuid,nodev,relatime,nojoliet,check=s,map=n,blocksize=2048,uid=0,gid=0,dmode=500,fmode=400', 'size_total': 11509741568, 'size_available': 0, 'block_size': 2048, 'block_total': 5619991, 'block_available': 0, 'block_used': 5619991, 'inode_total': 0, 'inode_available': 0, 'inode_used': 0, 'uuid': '2024-11-16-01-52-31-00'}) 
+
+PLAY RECAP *********************************************************************
+node1.example.com          : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+ROLES:
+
+[student@master roles]$ ansible-galaxy init webserver 
+- Role webserver was created successfully
+[student@master roles]$ ls -l
+total 0
+drwxrwxr-x. 10 student student 135 Oct 29 07:15 webserver
+[student@master roles]$ tree webserver/
+webserver/
+├── defaults
+│   └── main.yml
+├── files
+├── handlers
+│   └── main.yml
+├── meta
+│   └── main.yml
+├── README.md
+├── tasks
+│   └── main.yml
+├── templates
+├── tests
+│   ├── inventory
+│   └── test.yml
+└── vars
+    └── main.yml
+
+8 directories, 8 files
+[student@master roles]$
+
+
+[student@master playbooks]$ cat roles/webserver/tasks/main.yml 
+---
+# tasks file for webserver
+- name: install httpd
+  ansible.builtin.yum:
+    name: httpd
+    state: latest
+- name: copy file
+  ansible.builtin.copy:
+    src: httpd.conf.bkp
+    dest: /mnt
+  notify:
+    - restart_apache 
+- name: template config
+  ansible.builtin.template:
+    src: template.j2
+    dest: /opt/template-file
+
+[student@master playbooks]$ 
+
+[student@master playbooks]$ cat roles/webserver/handlers/main.yml 
+---
+# handlers file for webserver
+- name: restart_apache
+  ansible.builtin.service:
+    name: httpd
+    state: restarted
+[student@master playbooks]$ cat roles/webserver/templates/template.j2 
+My hostname is "{{ ansible_hostname }}"
+This webserver is configured by "{{ admin }}"
+[student@master playbooks]$ 
+
+[student@master playbooks]$ cat roles/webserver/files/httpd.conf.bkp 
+This is sample conf file for apache
+[student@master playbooks]$
+
+[student@master playbooks]$ cat roles/webserver/defaults/main.yml 
+---
+# defaults file for webserver
+admin: root-user
+[student@master playbooks]$ cat roles/webserver/vars/main.yml 
+---
+# vars file for webserver
+admin: Archana
+[student@master playbooks]$ i
+:
+
+[student@master playbooks]$ cat roles/webserver/vars/main.yml 
+---
+# vars file for webserver
+admin: Archana
+[student@master playbooks]$ cat roles-web.yml 
+- name: webserver role
+  hosts: node2.example.com
+  roles:
+    - webserver
+[student@master playbooks]$ 
+
+
+[student@master playbooks]$ ansible-navigator run roles-web.yml -m stdout 
+
+PLAY [webserver role] **********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [node2.example.com]
+
+TASK [webserver : install httpd] ***********************************************
+changed: [node2.example.com]
+
+TASK [webserver : copy file] ***************************************************
+changed: [node2.example.com]
+
+TASK [webserver : template config] *********************************************
+changed: [node2.example.com]
+
+RUNNING HANDLER [webserver : restart_apache] ***********************************
+changed: [node2.example.com]
+
+PLAY RECAP *********************************************************************
+node2.example.com          : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+[student@master playbooks]$ 
+
+
+
+- name: Create index.html
+  ansible.builtin.copy:
+    content: "Its a ansible-role!"
+    dest: /var/www/html/index.html
+  notify:
+    - restart_apache
+
+
+AWX:
+install using awx.sh script
+
+
+Create Project -> Name, source-control=git,  git url,  and branch
+create inventory
+create hosts
+create credentials
+credate template
+
+
+
+
+
