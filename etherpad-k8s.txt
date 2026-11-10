@@ -1,0 +1,1465 @@
+K8s Labs
+http://10.0.16.22/labs/
+
+https://etherpad.opendev.org/p/rjp-k8s
+ 33  cp ../Documents/OneDrive/0.ak8sinstall-rocky-withoption.sh .
+   34  kubectl get pods
+   35  kubectl get nodes
+   36  kubectl version
+   37  kubectl run pod1 --image nginx
+   38  kubectl get pods
+   39  kubectl get pods -o wide
+   40  kubectl run pod2 --image nginx
+   41  kubectl get pods -o wide
+   42  kubectl run pod3 --image httpd
+   43  kubectl get pods -o wide
+   44  curl http://192.168.166.130
+   46  kubectl run pod4 --image xnginxx
+   47  kubectl get pods -o wide
+   48  kubectl describe pod pod1
+   49  kubectl describe pod pod2
+   50  kubectl describe pod pod4
+   51  kubectl get pods -o wide
+   53  kubectl api-resources
+   54  kubectl api-resources |less
+1.pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod11
+  labels:
+    app: nginx
+    env: demo
+    proj: webapp
+spec:
+  containers:
+    - name: cont1
+      image: nginx
+ 
+    55  kubectl apply -f 1.pod.yaml 
+   56  kubectl get pods
+   57  kubectl explain pod
+   58  kubectl logs pod11
+   59  kubectl get pods -o wide
+   60  curl http://192.168.166.131
+   61  kubectl logs pod11
+   63  kubectl edit pod pod11
+ 
+ 2.nginxdemos.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginxdemospod
+  labels:
+    app: nginxdemos
+    env: demo
+    proj: webapp
+spec:
+  containers:
+    - name: cont1
+      image: nginxdemos/hello:plain-text
+ 
+   64  kubectl apply create -f 2.nginxdemos.yaml 
+   65  kubectl apply apply -f 2.nginxdemos.yaml 
+   66  kubectl apply  -f 2.nginxdemos.yaml 
+   67  kubectl get pods -o wide
+   68  curl http://192.168.104.3
+   69  kubectl exec -it nginxdemos -- /bin/sh
+   70  kubectl exec -it nginxdemospod -- /bin/sh
+   71  kubectl get pods -o wide
+   72  kubectl exec -it nginxdemospod -- /bin/sh
+   73  history 
+   74  kubectl get pods --show-labels
+   75  kubectl get pods -l env=demo
+   76  kubectl get pods -l env=demo --show-labels
+
+4.replicaset.yaml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset1
+  labels:
+    app: myappreplicaset
+    purpose: demo
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      k1: v1
+  template:
+    metadata:
+      labels:
+        k1: v1
+    spec:
+      containers:
+        - name: myappc1
+          image: nginxdemos/hello:plain-text
+
+
+
+
+
+ 1  kubectl apply -f 4.repilcaset.yaml 
+    2  kubectl get rs
+    3  kubectl get po
+    4  kubectl edit rs replicaset1
+    5  kubectl get po
+    6  kubectl get rs
+    7  kubectl get po
+    8  kubectl delete pod replicaset1-bkwlb
+    9  kubectl get po
+   10  kubectl describe rs replicaset1
+   11  kubectl apply -f 4.repilcaset.yaml 
+   12  kubectl describe rs replicaset1
+   13  kubectl apply -f 4.repilcaset.yaml 
+   14  kubectl get rs
+   15  kubectl get po -o wide
+   16  kubectl destroy -f 4.repilcaset.yaml 
+   17  kubectl delete -f 4.repilcaset.yaml 
+   18  kubectl delete pods --all
+5.deploy-recreate.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy1
+spec:
+  replicas: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: deploy1
+  template:
+    metadata:
+      labels:
+        app: deploy1
+    spec:
+      containers:
+      - name: deploy1
+        image: nginxdemos/hello:0.3-plain-text
+        #image: nginxdemos/hello:0.4-plain-text
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+
+
+
+ 20  kubectl apply -f 5.deploy-recreate.yaml 
+   21  kubectl get deploy
+   22  kubectl get rs
+   23  kubectl get po
+   24  kubectl apply -f 5.deploy-recreate.yaml 
+   25  kubectl get deploy
+   26  kubectl get rs
+   27  kubectl get po
+   28  kubectl apply -f 5.deploy-recreate.yaml 
+   29  kubectl get deploy
+   30  kubectl get rs
+   31  kubectl get po
+   32  kubectl describe deploy deploy1
+   33  kubectl describe rs deploy1-6c6f859b7c
+   34  kubectl get all
+   6.deploy-rolling.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 4
+  # strategy: 
+  #   rollingUpdate:
+  #     maxSurge: 25%
+  #     maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+# kubectl apply -f 6.deploy-rolling.yaml
+# kubectl rollout status deploy nginx-deployment
+# kubectl set image deployment.v1.apps/nginx-deployment nginx=nginx:1.16.1
+# kubectl set image deployment/nginx-deployment nginx=nginx:1.16.1
+# kubectl edit deployment/nginx-deployment
+# kubectl rollout status deployment/nginx-deployment
+# kubectl describe deployments
+# kubectl set image deployment/nginx-deployment nginx=nginx:1.161 #specified non-existing image
+# kubectl rollout history deployment/nginx-deployment
+# kubectl rollout history deployment/nginx-deployment --revision=2
+# kubectl rollout undo deployment/nginx-deployment
+# kubectl rollout undo deployment/nginx-deployment --to-revision=2
+# 
+   35  kubectl apply -f 6.deploy-rolling.yaml
+   36  kubectl get all
+   37  kubectl rollout status
+   38  kubectl rollout status nginx-deployment
+   39  kubectl rollout status deploy nginx-deployment
+   40  kubectl describe deploy nginx-deployment
+   41  kubectl set image deployment.v1.apps/nginx-deployment nginx=nginx:1.16.1
+   42  kubectl rollout status deploy nginx-deployment
+   43  kubectl get all
+   44  kubectl describe deploy nginx-deployment
+   45  kubectl set image deployment/nginx-deployment nginx=nginx:1.161
+   46  kubectl rollout status deploy nginx-deployment
+   47  kubectl get all
+   48  kubectl rollout history deployment/nginx-deployment
+   49  kubectl rollout history deployment/nginx-deployment --revision=2
+   50  kubectl rollout history deployment/nginx-deployment --revision=3
+   51  kubectl rollout history deployment/nginx-deployment --revision=1
+   52  kubectl rollout undo deployment/nginx-deployment
+   53  kubectl rollout history deployment/nginx-deployment
+   54  kubectl rollout undo deployment/nginx-deployment --to-revision=1
+   55  kubectl rollout history deployment/nginx-deployment
+7.deploy.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy1
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: deploy1
+  template:
+    metadata:
+      labels:
+        app: deploy1
+        env: demo
+        color: red
+    spec:
+      containers:
+      - name: deploy1
+        image: nginxdemos/hello:0.3-plain-text
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+ 114  ka 7.deploy.yaml 
+  115  kgp
+  116  kgd
+  117  source 0source.txt 
+  118  kgd
+  119  kg rs
+  120  kgp
+  121  kgpw
+  122  kg service
+  
+  8.service-cip.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice
+spec:
+  selector:
+    #app: myapp
+    color: red
+  ports:
+  - port: 80 #based service type clusterip:port
+    targetPort: 80 #container app service port no
+
+
+  123  ka 8.service-cip.yaml 
+  124  kg service
+  125  kgp
+  126  curl http://10.105.0.201
+  127  kgpw
+  128  kd service webservice
+  129  kg endpoints
+  130  ka 8.service-cip.yaml 
+  131  kg endpoints
+  132  kd service webservice
+  133  kgp
+  134  curl http://10.105.0.201
+  
+8.service-cip.yaml   
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy1
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: deploy1
+  template:
+    metadata:
+      labels:
+        app: deploy1
+        env: demo
+        color: red
+    spec:
+      containers:
+      - name: deploy1
+        image: nginxdemos/hello:0.3-plain-text
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+  136  kd -f 7.deploy.yaml 
+  137  kdel -f 7.deploy.yaml 
+  
+  
+  
+  138  kdel -f 8.service-cip.yaml 
+  
+  
+  9.deoply-web.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy1
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: deploy1
+  template:
+    metadata:
+      labels:
+        app: deploy1
+        env: demo
+        color: red
+        proj: notify
+    spec:
+      containers:
+      - name: cont1
+        image: nginxdemos/hello:0.3-plain-text
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice
+spec:
+  selector:
+    #app: myapp
+    color: red
+    proj: notify
+  ports:
+  - port: 80 #based service type clusterip:port
+    targetPort: 80 #container app service port no
+
+
+
+
+  139  ka 9.deoply-web.yaml 
+  140  k get all
+  141  kg service/webservice
+  142  kd service/webservice
+  143  kg ep
+  144  ka 9.deoply-web.yaml 
+  145  kg ep
+  146  kd service/webservice
+  147  ka 9.deoply-web.yaml 
+  148  kd service/webservice
+  149  kg ep
+  150  kgp
+  151  kgpw
+  152  curl http://10.109.53.196
+  153  kdel po deploy1-65f68995b6-t6bs6 
+  154  kgp
+  155  curl http://10.109.53.196
+  
+  10.portDeploy.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy1
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: deploy1
+  template:
+    metadata:
+      labels:
+        app: deploy1
+        env: demo
+        color: red
+        proj: notify
+    spec:
+      containers:
+      - name: cont1
+        image: nginxdemos/hello:0.3-plain-text
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice80
+spec:
+  selector:
+    #app: myapp
+    color: red
+    proj: notify
+  ports:
+  - port: 80 #based service type clusterip:port
+    targetPort: 80 #container app service port no
+  type: ClusterIP  
+
+
+
+  157  kdel -f 10.portDeploy.yaml 
+  158  kg all
+11.deploy.8080.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy8080
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: deploy1
+  template:
+    metadata:
+      labels:
+        app: deploy1
+        env: demo8080
+        color: red
+        proj: notify
+    spec:
+      containers:
+      - name: cont1
+        image: nginxdemos/nginx-hello:0.3-plain-text
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice8080
+spec:
+  selector:
+    #app: myapp
+    #color: red
+    #proj: notify
+    env: demo8080
+  ports:
+  - port: 80 #based service type clusterip:port
+    targetPort: 8080 #container app service port no
+
+
+
+  159  ka 11.deploy.8080.yaml 
+  160  kg all
+  161  kd deployment.apps/deploy8080
+  162  kd replicaset.apps/deploy8080-f885db5c9
+  163  kd pod/deploy8080-f885db5c9-2qqgt
+  164  kg all
+  165  k delete deployment.apps/deploy1
+  166  kg all
+  167  curl://10.109.178.46
+  168  curl http://10.109.178.46
+  169  curl http://10.109.178.46:8080
+  170  ka 11.deploy.8080.yaml 
+  171  curl http://10.109.178.46
+  172  kdel -f 11.deploy.8080.yaml 
+  173  kg all
+  174  kdel svc webservice8080
+  175  kdel svc webservice80
+  176  kg all
+  
+12.nodeport.yaml   
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy8080
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: deploy1
+  template:
+    metadata:
+      labels:
+        app: deploy1
+        env: demo8080
+        color: red
+        proj: notify
+    spec:
+      containers:
+      - name: cont1
+        image: nginxdemos/nginx-hello:0.3-plain-text
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice8080
+spec:
+  type: NodePort
+  selector:
+    #app: myapp
+    #color: red
+    #proj: notify
+    env: demo8080
+  ports:
+  - port: 80 #based service type clusterip:port
+    targetPort: 8080 #container app service port no
+    nodePort: 30123 #range supported 30000-32767
+
+
+  177  ka 12.nodeport.yaml 
+  178  kg all
+  179  curl http://10.111.178.187
+  180  kg all
+  181  kdel deployment.apps/deploy8080
+  182  kdel service/webservice8080
+  183  kg all
+  
+  
+ 3.fullappdelpoy.yaml  
+  apiVersion: apps/v1 
+kind: StatefulSet 
+metadata: 
+  name: rabbitmq 
+spec: 
+  serviceName: rabbitmq 
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: rabbitmq 
+  template: 
+    metadata: 
+      labels: 
+        app: rabbitmq 
+    spec: 
+      nodeSelector: 
+        "kubernetes.io/os": linux 
+      containers: 
+        - name: rabbitmq 
+          image: rabbitmq:4.3.2-management-alpine 
+          ports: 
+            - containerPort: 5672 
+              name: rabbitmq-amqp 
+            - containerPort: 15672 
+              name: rabbitmq-http 
+          env: 
+            - name: RABBITMQ_DEFAULT_USER 
+              value: "username" 
+            - name: RABBITMQ_DEFAULT_PASS 
+              value: "password" 
+          resources: 
+            requests: 
+              cpu: 10m 
+              memory: 128Mi 
+            limits: 
+              cpu: 250m 
+              memory: 256Mi 
+          startupProbe: 
+            tcpSocket: 
+              port: 5672 
+            failureThreshold: 30 
+            initialDelaySeconds: 10 
+            periodSeconds: 10 
+          readinessProbe: 
+            tcpSocket: 
+              port: 5672 
+            failureThreshold: 3 
+            initialDelaySeconds: 5 
+            periodSeconds: 5 
+          livenessProbe: 
+            tcpSocket: 
+              port: 5672 
+            failureThreshold: 3 
+            initialDelaySeconds: 30 
+            periodSeconds: 10 
+--- 
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: rabbitmq 
+spec: 
+  selector: 
+    app: rabbitmq 
+  ports: 
+    - name: rabbitmq-amqp 
+      port: 5672 
+      targetPort: 5672 
+    - name: rabbitmq-http 
+      port: 15672 
+      targetPort: 15672 
+  type: ClusterIP 
+--- 
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: order-service 
+spec: 
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: order-service 
+  template: 
+    metadata: 
+      labels: 
+        app: order-service 
+    spec: 
+      nodeSelector: 
+        "kubernetes.io/os": linux 
+      containers: 
+        - name: order-service 
+          image: ghcr.io/azure-samples/aks-store-demo/order-service:2.2.0 
+          ports: 
+            - containerPort: 3000 
+          env: 
+            - name: ORDER_QUEUE_HOSTNAME 
+              value: "rabbitmq" 
+            - name: ORDER_QUEUE_PORT 
+              value: "5672" 
+            - name: ORDER_QUEUE_USERNAME 
+              value: "username" 
+            - name: ORDER_QUEUE_PASSWORD 
+              value: "password" 
+            - name: ORDER_QUEUE_NAME 
+              value: "orders" 
+            - name: FASTIFY_ADDRESS 
+              value: "0.0.0.0" 
+          resources: 
+            requests: 
+              cpu: 1m 
+              memory: 50Mi 
+            limits: 
+              cpu: 75m 
+              memory: 128Mi 
+          startupProbe: 
+            httpGet: 
+              path: /health 
+              port: 3000 
+            failureThreshold: 5 
+            initialDelaySeconds: 20 
+            periodSeconds: 10 
+          readinessProbe: 
+            httpGet: 
+              path: /health 
+              port: 3000 
+            failureThreshold: 3 
+            initialDelaySeconds: 3 
+            periodSeconds: 5 
+          livenessProbe: 
+            httpGet: 
+              path: /health 
+              port: 3000 
+            failureThreshold: 5 
+            initialDelaySeconds: 3 
+            periodSeconds: 3 
+      initContainers: 
+        - name: wait-for-rabbitmq 
+          image: busybox:1.37.0 
+          command: 
+            ["sh", "-c", "until nc -zv rabbitmq 5672; do echo waiting for rabbitmq; sleep 2; done;"] 
+          resources: 
+            requests: 
+              cpu: 1m 
+              memory: 50Mi 
+            limits: 
+              cpu: 75m 
+              memory: 128Mi 
+--- 
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: order-service 
+spec: 
+  type: ClusterIP 
+  ports: 
+    - name: http 
+      port: 3000 
+      targetPort: 3000 
+  selector: 
+    app: order-service 
+--- 
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: product-service 
+spec: 
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: product-service 
+  template: 
+    metadata: 
+      labels: 
+        app: product-service 
+    spec: 
+      nodeSelector: 
+        "kubernetes.io/os": linux 
+      containers: 
+        - name: product-service 
+          image: ghcr.io/azure-samples/aks-store-demo/product-service:2.2.0 
+          ports: 
+            - containerPort: 3002 
+          env: 
+            - name: AI_SERVICE_URL 
+              value: "http://ai-service:5001/" 
+          resources: 
+            requests: 
+              cpu: 1m 
+              memory: 1Mi 
+            limits: 
+              cpu: 2m 
+              memory: 20Mi 
+          readinessProbe: 
+            httpGet: 
+              path: /health 
+              port: 3002 
+            failureThreshold: 3 
+            initialDelaySeconds: 3 
+            periodSeconds: 5 
+          livenessProbe: 
+            httpGet: 
+              path: /health 
+              port: 3002 
+            failureThreshold: 5 
+            initialDelaySeconds: 3 
+            periodSeconds: 3 
+--- 
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: product-service 
+spec: 
+  type: ClusterIP 
+  ports: 
+    - name: http 
+      port: 3002 
+      targetPort: 3002 
+  selector: 
+    app: product-service 
+--- 
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: store-front 
+spec: 
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: store-front 
+  template: 
+    metadata: 
+      labels: 
+        app: store-front 
+    spec: 
+      nodeSelector: 
+        "kubernetes.io/os": linux 
+      containers: 
+        - name: store-front 
+          image: ghcr.io/azure-samples/aks-store-demo/store-front:2.2.0 
+          ports: 
+            - containerPort: 8080 
+              name: store-front 
+          resources: 
+            requests: 
+              cpu: 1m 
+              memory: 200Mi 
+            limits: 
+              cpu: 1000m 
+              memory: 512Mi 
+          startupProbe: 
+            httpGet: 
+              path: /health 
+              port: 8080 
+            failureThreshold: 3 
+            initialDelaySeconds: 5 
+            periodSeconds: 5 
+          readinessProbe: 
+            httpGet: 
+              path: /health 
+              port: 8080 
+            failureThreshold: 3 
+            initialDelaySeconds: 3 
+            periodSeconds: 3 
+          livenessProbe: 
+            httpGet: 
+              path: /health 
+              port: 8080 
+            failureThreshold: 5 
+            initialDelaySeconds: 3 
+            periodSeconds: 3 
+--- 
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: store-front 
+spec: 
+  ports: 
+    - port: 80 
+      targetPort: 8080 
+  selector: 
+    app: store-front 
+  type: LoadBalancer
+
+184  ka 13.fullappdelpoy.yaml 
+  185  kg all
+  186  kdel -f 13.fullappdelpoy.yaml 
+  187  kg all
+  
+189  kg ep
+  190  ka 9.deoply-web.yaml 
+  191  kg ep
+  192  kd service/webservice
+  193  ka 9.deoply-web.yaml 
+  194  kd service/webservice
+  195  kg ep
+  196  kgp
+  197  kgpw
+  198  curl http://10.109.53.196
+  199  kdel po deploy1-65f68995b6-t6bs6 
+  200  kgp
+  201  curl http://10.109.53.196
+  202  kdel 10.portDeploy.yaml 
+  203  kdel -f 10.portDeploy.yaml 
+  204  kg all
+  205  ka 11.deploy.8080.yaml 
+  206  kg all
+  207  kd deployment.apps/deploy8080
+  208  kd replicaset.apps/deploy8080-f885db5c9
+  209  kd pod/deploy8080-f885db5c9-2qqgt
+  210  kg all
+  211  k delete deployment.apps/deploy1
+  212  kg all
+  213  curl://10.109.178.46
+  214  curl http://10.109.178.46
+  215  curl http://10.109.178.46:8080
+  216  ka 11.deploy.8080.yaml 
+  217  curl http://10.109.178.46
+  218  kdel -f 11.deploy.8080.yaml 
+  219  kg all
+  220  kdel svc webservice8080
+  221  kdel svc webservice80
+  222  kg all
+  223  ka 12.nodeport.yaml 
+  224  kg all
+  225  curl http://10.111.178.187
+  226  kg all
+  227  kdel deployment.apps/deploy8080
+  228  kdel service/webservice8080
+  229  kg all
+  230  ka 13.fullappdelpoy.yaml 
+  231  kg all
+  232  kdel -f 13.fullappdelpoy.yaml 
+  233  kg all
+  234  cp ../Documents/OneDrive/4.init-container.yml 14.init1.yaml
+  235  cp ../Documents/OneDrive/4.init-container2.yml 14.1.init1.yaml
+  236  history 
+  237  ka 14.1.init1.yaml 
+  238  kg all
+  239  k logs pod/init-container
+  240  k logs init-container
+  241  k describe init-container
+  242  k describe pod init-container
+  243  k describe init-container init-container
+  244  k logs init-container init-container
+  245  k logs init-container main-container
+  246  ka 14.1.init1.yaml 
+  247  kg all
+  248  k delete pod/init-container
+  249  kg all
+  250  ka 14.1.init1.yaml 
+  251  kg all
+  252  k logs podinit main-container
+  253  ka 14.1.init1.yaml 
+  254  k del pod podinit
+  255  k delete pod podinit
+  256  ka 14.1.init1.yaml 
+  257  kg all
+  258  k delete pod podinit
+  259  kg all
+  260  ka 14.1.init1.yaml 
+  261  watch kg all
+  262  watch kubectl gett all
+  263  watch kubectl get all
+  264  kdel -f 14.1.init1.yaml 
+  265  ka 14.1.init1.yaml 
+  266  watch kubectl get all
+  267  kg all
+  268  kdel pod podinit
+  269  kg all
+  270  ka 15.emptydir.yaml 
+  271  kdel pod emptydirpod
+  272  ka 15.emptydir.yaml 
+  273  kd pod/emptydirpod
+  274  kubectl exec -it emptydirpod -- /bin/bash
+  275  ka 15.emptydir.yaml 
+  276  kd pod/emptydirpod
+  277  k delete pod/emptydirpod
+  278  ka 15.emptydir.yaml 
+  279  kubectl exec -it emptydirpod -- /bin/bash
+  280  kd pod/emptydirpod
+  281  kubectl exec -it emptydirpod -- /bin/bash
+  282  k delete pod/emptydirpod
+  283  ka 15.emptydir.yaml 
+  284  kubectl exec -it emptydirpod -- /bin/bash
+  285  k delete pod/emptydirpod
+  286  kg all
+  287  ka 16.emptydir-multicont.yaml 
+  288  kubectl describe pod/mc1
+  289  kgpw
+  290  curl http://192.168.104.38
+  291  kubectl exec -it emptydirpod -c 1st -- /bin/bash
+  292  kubectl exec -it mc1 -c 1st -- /bin/bash
+  293  kubectl exec -it mc1 -c 2nd -- /bin/bash
+  294  kubectl describe pod/mc1
+  295  k delete pod/mc1
+  296  kg all
+  297  ka 16.emptydir-multicont.yaml 
+  298  kubectl describe pod/mc1
+  299  kgpw
+  300  curl http://192.168.104.39
+  301  k delete pod/mc1
+  302  kubectl get all
+  303  ka 17.hostpath.yaml 
+  304  kgn
+  305  kgn --show-labels
+  306  kg all
+  307  ka 17.hostpath.yaml 
+  308  kd pod/hostpod
+  309  kdel pod/hostpod
+  310  ka 17.hostpath.yaml 
+  311  kd pod/hostpod
+  312  curl http://192.168.166.170
+  313  history 
+  314  ka 18.hostpath2.yaml 
+  315  kgpw
+  316  kubectl exec -it  hostpod2 -- /bin/bash
+  
+  
+  318  kubectl get pods -n kube-system
+  319  kubectl get pods -n kube-system -o wide
+  320  k get pv
+  321  source 0source.txt 
+  322  k get pv
+  323  ka 19.pv.yaml 
+  324  k get pv
+  325  kg pvc
+  326  ka 19.2pvc.yaml 
+  327  k get pv
+  328  k get pvc
+  329  k get pv
+  330  kgp
+  331  ka 19.3.pod-pvc-pv.yaml 
+  332  k get pv
+  333  k get pvc
+  334  k get pods
+  335  k get pods -o wide
+  336  k exec -it task-pv-pod -- /bin/bash
+  337  curl http://192.168.104.41
+  338  curl http://192.168.104.42
+  339  kg pv
+  340  ka 21.1nfspv.yaml 
+  341  kg pv
+  342  ka 21.2nfspvc.yaml 
+  343  kg pv
+  344  kg pvc
+  345  ka 21.3nfs-pod-pvc-pv.yaml 
+  346  kgpw
+  347  curl http://192.168.166.172
+  348  kubectl create namespace nfs-provisioner
+  349  ka 22.1dynnfs-rbac.yaml 
+  350  kg all -n nfs-provisioner
+  351  history 
+  352  history |tail -5
+  353  ka 22.2nfsstorageclass.yaml 
+  354  kg sc
+  355  nano 22.3nfsdynpvc.yaml
+  356  kg sc
+  357  kg pv
+  358  kg pvc
+  359  ka 22.3nfsdynpvc.yaml 
+  360  kg pv
+  361  kg pvc
+  362  kg pv
+  363  kg pvc
+  364  nano 22.4nfsdynpvcpod.yaml
+  365  kg pv
+  366  kg pvc
+  367  k describe pvc nginx-pvc
+  368  k get pod -n nfs-provisioner
+  369  k describe pod -n nfs-provisioner
+  370  kgp
+  371  k describe pvc nginx-pvc
+  372  ka 22.1dynnfs-rbac.yaml 
+  373  kg pv
+  374  kg pvc
+  375  kdel pvc nginx-pvc
+  376  ka 22.3nfsdynpvc.yaml 
+  377  kg pvc
+  378  k describe pvc nginx-pvc
+  379  k logs pod nginx
+  380  kgp
+  381  ka 22.4nfsdynpvcpod.yaml 
+  382  kgp
+  383  k describe pod nginx
+  384  kubectl delete all --all
+  385  kg all
+  386  kg cm
+  387  ka 23.1configmap.yaml 
+  388  kg cm
+  389  k describe cm myappconfigdev
+  390  ka 23.1configmap.yaml 
+  391  kgp
+  392  k exec -it pod11 -- /bin/bash
+  393  ka 23.2configmap.yaml 
+  394  kd cm game-demo
+  395  ka 23.3configmap-pod.yaml 
+  396  k exec -it configmap-demo-pod -- /bin/sh
+  397  k edit clusterrole nfs-client-provisioner-runner
+  398  kg pvc
+  399  KA 22.1dynnfs-rbac.yaml 
+  400  ka 22.1dynnfs-rbac.yaml 
+  401  kg pv
+  402  kg pvc
+  403  kgp
+  404  ka 22.4nfsdynpvcpod.yaml 
+  405  kgp
+  406  showmount -e node2
+  407  ka 22.1dynnfs-rbac.yaml 
+  408  showmount -e node2
+  409  kgpw
+  410  curl http://192.168.166.175
+  411  kg pv
+  412  curl http://192.168.166.175
+  413  kdel -f 22.2nfsstorageclass.yaml 
+  414  kdel -f 22.3
+  415  kdel -f 22.3nfsdynpvc.yaml 
+  416  kdel -f 22.4nfsdynpvcpod.yaml 
+  417  ka 22.1dynnfs-rbac.yaml 
+  418  kg sc
+  419  ka 22.2nfsstorageclass.yaml 
+  420  kg sc
+  421  ka 22.3nfsdynpvc.yaml 
+  422  kg sc
+  423  kg pv
+  424  kg pvc
+  425  ka 22.4nfsdynpvcpod.yaml 
+  426  kgpw
+  427  curl http://192.168.104.44
+  428  kd pod dynnginx
+  429  kg pv
+  430  k exec -it dynnginx -- /bin/bash
+  431  echo -n P@ssw0rd | base64 
+  432  echo -n myadmin123 | base64 
+  433  kg secret
+  434  ka 24.1secret.yml 
+  435  kg secret
+  436  kd secret mysecret
+  437  k get nodes --show-labels
+  438  kd node master
+  439  kd node node1 |grep taint
+  440  kd node node1 |grep taints
+  441  kd node node1 |grep Taints
+  442  kd node node1 
+  443  k taint nodes node1 srvenv=production:NoSchedule
+  444  kd node node1 |grep Taints
+  445  kubectl get pods -o wide
+  446  k taint nodes node1 srvenv=dev:NoExecute
+  447  k taint nodes node1 srvenv=production:NoExecute
+  448  k taint nodes node2 srvenv=dev:NoExecute
+  449  kd node node2 |grep Taints
+  450  kubectl get pods -o wide
+  451  kd node node1
+  452  k taint nodes node1 srvenv=production:NoExecute -
+  453* k taint nodes node1 srvenv=pr
+  454  kd node node1 |grep Taints
+  455  k taint nodes node1 srvenv=production:NoSchedule-
+  456  k taint nodes node2 srvenv=dev:NoExecute-
+  457  k taint nodes node1 color=red:NoExecute
+  458  k taint nodes node2 color=blue:NoSchedule
+  459  ka 25.1podnotole.yaml 
+  460  kgp
+  461  kd pod myapp
+  462  ka 25.2redpod.yaml 
+  463  kgp
+  464  kdel pod myapp
+  465  ka 25.2redpod.yaml 
+  466  kgp
+  467  ka 25.2redpod.yaml 
+  468  kdel pod myappred
+  469  ka 25.2redpod.yaml 
+  470  kgp
+  471  k taint nodes node2 color=blue:NoSchedule-
+  472  k taint nodes node2 color=blue:PreferNoSchedule
+  473  ka 25.3pinktol.yaml 
+  474  kgp
+  475  kgpw
+  476  kg nodes --show-labels
+  477  k label nodes node1 disk=ssd
+  478  k label nodes node2 disk=nonssd
+  479  kg nodes --show-labels
+  480  ka 25.4ssdpod.yaml 
+  481  kgp
+  482  kdel pod/myapppink
+  483  ka 25.4ssdpod.yaml 
+  484  kdel pod/myapppink
+  485  ka 25.4ssdpod.yaml 
+  486  kd pod myapppink
+  487  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+  488  kg all -n kubernetes-dashboard
+  489  kubectl proxy
+  
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+
+#kubectl proxy
+
+#http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+
+ #kubectl apply -f filename.yaml
+
+#
+kubectl -n kubernetes-dashboard create token admin-user
+
+
+  
+kubectl cluster-info
+kubectl get nodes
+kubectl config current-context
+
+
+kubectl auth can-i create namespaces
+kubectl auth can-i create roles -n default
+kubectl auth can-i create rolebindings -n default
+
+
+kubectl create namespace app-team
+kubectl get namespaces
+
+kubectl run web-demo --image=nginx:stable --namespace=app-team
+
+kubectl get pods -n app-team
+kubectl describe pod web-demo -n app-team
+
+Create `01-serviceaccount.yaml`:
+
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: developer-alice
+  namespace: app-team
+```
+
+kubectl apply -f 01-serviceaccount.yaml
+kubectl get serviceaccounts -n app-team
+
+
+Create `02-pod-reader-role.yaml`:
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: app-team
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+```
+
+kubectl apply -f 02-pod-reader-role.yaml
+kubectl get roles -n app-team
+kubectl describe role pod-reader -n app-team
+
+Create `03-pod-reader-binding.yaml`:
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: developer-alice-pod-reader
+  namespace: app-team
+subjects:
+  - kind: ServiceAccount
+    name: developer-alice
+    namespace: app-team
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-reader
+```
+
+
+kubectl apply -f 03-pod-reader-binding.yaml
+
+kubectl get rolebindings -n app-team
+
+kubectl describe rolebinding developer-alice-pod-reader -n app-team
+
+
+  kubectl auth can-i get pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+
+  kubectl auth can-i list pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+
+  kubectl auth can-i watch pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+
+  kubectl auth can-i create pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+
+kubectl auth can-i delete pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+
+kubectl auth can-i get secrets -n app-team --as=system:serviceaccount:app-team:developer-alice
+
+  kubectl auth can-i list pods -n default --as=system:serviceaccount:app-team:developer-alice
+
+kubectl get role pod-reader -n app-team -o yaml
+
+kubectl get rolebindings -n app-team -o yaml
+
+kubectl get pods -n app-team
+
+kubectl get rolebindings -n app-team -o custom-columns=NAME:.metadata.name,ROLE:.roleRef.name
+
+kubectl auth can-i --list -n app-team --as=system:serviceaccount:app-team:developer-alice
+
+kubectl delete namespace app-team
+--------------------------------------
+
+
+kubectl create token developer-alice -n app-team --duration 60m
+TOKEN=$(kubectl create token developer-alice -n app-team)
+CLUSTER=$(kubectl config view --minify -o jsonpath='{.contexts[0].context.cluster}')
+echo $CLUSTER
+
+
+kubectl config set-credentials developer-alice --token="$TOKEN"
+
+kubectl config set-context alice-context --cluster="$CLUSTER" --user=developer-alice  --namespace=app-team
+kubectl config get-contexts
+kubectl config use-context alice-context
+
+kubectl config current-context
+
+## 6. Test Pod access
+
+Expected: Allowed
+kubectl get pods
+kubectl get pods -n app-team
+Try listing Pods in another namespace:
+kubectl get pods -n default
+Expected: Forbidden
+Try deleting a Pod:
+kubectl delete pod web-demo
+
+kubectl config get-contexts
+Identify your original admin context, then:
+
+kubectl config use-context <admin-context-name>
+
+
+kubectl delete namespace app-team
+
+
+  572  history 
+  573  kubectl cluster-info
+  574  kubectl get nodes
+  575  kubectl config current-context
+  576  kubectl auth can-i create namespaces
+  577  kubectl auth can-i create roles -n default
+  578  kubectl auth can-i create rolebindings -n default
+  579  kubectl create namespace app-team
+  580  kubectl get namespaces
+  581  kubectl run web-demo --image=nginx:stable --namespace=app-team
+  582  kubectl get pods -n app-team
+  583  kubectl describe pod web-demo -n app-team
+  584  kubectl apply -f 16.1serviceacct.yaml 
+  585  kubectl get serviceaccounts -n app-team
+  586  kubectl apply -f 17.2role-pod-reader.yaml 
+  587  kubectl get roles -n app-team
+  588  kubectl describe role pod-reader -n app-team
+  589  kubectl apply -f 17.3rolebinding.yaml 
+  590  kubectl get rolebindings -n app-team
+  591  kubectl describe rolebinding developer-alice-pod-reader -n app-team
+  592    kubectl auth can-i get pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  593    kubectl auth can-i list pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  594  kubectl auth can-i watch pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  595  kubectl auth can-i create pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  596  kubectl auth can-i delete pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  597  kubectl auth can-i get secrets -n app-team --as=system:serviceaccount:app-team:developer-alice
+  598  kubectl auth can-i list pods -n default --as=system:serviceaccount:app-team:developer-alice
+  599  kubectl get role pod-reader -n app-team -o yaml
+  600  kubectl get rolebindings -n app-team -o yaml
+  601  kubectl get pods -n app-team
+  602  kubectl get rolebindings -n app-team -o custom-columns=NAME:.metadata.name,ROLE:.roleRef.name
+  603  ssh 10.0.16.125
+  604  ssh 10.0.16.75
+  605  kubectl auth can-i --list -n app-team --as=system:serviceaccount:app-team:developer-alice
+  606  kubectl delete namespace app-team
+  607  kubectl config current-context
+  608  kubectl auth can-i create rolebindings -n default
+  609  ubectl create namespace app-team
+  610  kubectl get namespaces
+  611  kubectl run web-demo --image=nginx:stable --namespace=app-team
+  612  kubectl get pods -n app-team
+  613  kubectl describe pod web-demo -n app-team
+  614  kubectl create namespace app-team
+  615  kubectl get namespaces
+  616  kubectl run web-demo --image=nginx:stable --namespace=app-team
+  617  kubectl get pods -n app-team
+  618  kubectl describe pod web-demo -n app-team
+  619  ssh student@10.0.16.25
+  620  hostname
+  621  hostname -i
+  622  ssh student@10.0.16.25
+  623  ssh student@10.0.16.75
+  624  ssh student@10.0.16.125
+  625  su -
+  626  kubectl apply -f 16.1serviceacct.yaml 
+  627  kubectl apply -f 17.1serviceacct.yaml 
+  628  kubectl apply -f 17.2role-pod-reader.yaml 
+  629  kubectl apply -f 17.3rolebinding.yaml 
+  630  kubectl auth can-i get secrets -n app-team --as=system:serviceaccount:app-team:developer-alice
+  631    kubectl auth can-i list pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  632  kubectl create token developer-alice -n app-team -duration 60m
+  633  kubectl create token developer-alice -n app-team --duration 60m
+  634  TOKEN=$(kubectl create token developer-alice -n app-team)
+  635  echo $TOKEN
+  636  CLUSTER=$(kubectl config view --minify -o jsonpath='{.contexts[0].context.cluster}')
+  637  echo $CLUSTER
+  638  kubectl config set-credentials developer-alice --token="$TOKEN"
+  639  ls -l ~/.kube/config 
+  640  ls -l ~/.kube/config.lock
+  641  chown -R $(whoami):$(whoami) /home/student/.kube
+  642  ls -ld ~/.kube
+  643  kubectl config set-credentials developer-alice --token="$TOKEN"
+  644  kubectl config set-context alice-context --cluster="$CLUSTER" --user=developer-alice  --namespace=app-team
+  645  kubectl config get-contexts
+  646  kubectl config use-context alice-context
+  647  kubectl config current-context
+  648  kubectl get pods
+  649  kubectl get pods -n default
+  650  kubectl delete pod web-demo
+  651  kubectl config get-contexts
+  652  kubectl config use-context kubernetes-admin@kubernetes
+  653  kubectl config get-contexts
+  654  kubectl get pods -n default
+  655  kubectl config get-contexts
+  656  kubectl delete namespace app-team
+  657  kubectl get quota -n dev
+  658  kubectl get quotalimits -n dev
+  659  kubectl get quota -n dev
+  660  kubectl apply -f 28.devquota.yaml 
+  661  kubectl get quota -n dev
+  662  kubectl run pod2 --image=nginx -n dev
+  663  kubectl run pod3 --image=nginx -n dev
+  664  kubectl apply -f 28.devquota.yaml 
+  665  kubectl get quota -n dev
+  666  kubectl delete -f 28.devquota.yaml 
+  667  kubectl get quota -n dev
+  668  cp ../Documents/OneDrive/rbac-service.md .
+  669  ls ../Documents/OneDrive/
+  670  kubectl cluster-info
+  671  kubectl config current-context
+  672  kubectl auth can-i create namespaces
+  673  kubectl auth can-i create roles -n default
+  674  kubectl auth can-i create rolebindings -n default
+  675  kubectl create namespace app-team
+  676  kubectl get namespaces
+  677  kubectl run web-demo --image=nginx:stable --namespace=app-team
+  678  kubectl get pods -n app-team
+  679  kubectl apply -f 31.1serviceaccount.yaml 
+  680  kubectl get serviceaccounts -n app-team
+  681  kubectl apply -f 31.2role.yaml 
+  682  kubectl get role -n app-team
+  683  kubectl describe role pod-reader -n app-team
+  684  kubectl apply -f 31.3role-binding.yaml 
+  685  kubectl get rolebindings -n app-team
+  686  kubectl describe rolebinding developer-alice-pod-reader -n app-team
+  687    kubectl auth can-i get pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  688    kubectl auth can-i list pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  689    kubectl auth can-i watch pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  690    kubectl auth can-i create pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  691  kubectl auth can-i delete pods -n app-team --as=system:serviceaccount:app-team:developer-alice
+  692  kubectl auth can-i get secrets -n app-team --as=system:serviceaccount:app-team:developer-alice
+  693    kubectl auth can-i list pods -n default --as=system:serviceaccount:app-team:developer-alice
+  694  kubectl get role pod-reader -n app-team -o yaml
+  695  kubectl get rolebindings -n app-team -o yaml
+  696  kubectl create token developer-alice -n app-team --duration 60m
+  697  TOKEN=$(kubectl create token developer-alice -n app-team)
+  698  echo $TOKEN
+  699  kubectl create token developer-alice -n app-team)
+  700  CLUSTER=$(kubectl config view --minify -o jsonpath='{.contexts[0].context.cluster}'
+kubectl create token developer-alice -n app-team
+  701  kubectl create token developer-alice -n app-team
+  702  TOKEN=$(kubectl create token developer-alice -n app-team)
+  703  kubectl config view --minify -o jsonpath='{.contexts[0].context.cluster}'
+  704  CLUSTER=$(kubectl config view --minify -o jsonpath='{.contexts[0].context.cluster}')
+  705  kubectl config set-credentials developer-alice --token="$TOKEN"
+  706  kubectl config current-context
+  707  kubectl config set-context alice-context --cluster="$CLUSTER" --user=developer-alice  --namespace=app-team
+  708  kubectl config get-contexts
+  709  kubectl config current-context
+  710  kubectl config use-context alice-context
+  711  kubectl config current-context
+  712  kubectl get pods -n app-team
+  713  kubectl run podalice --image=nginx
+  714  kubectl config use-context kubernetes-admin
+  715  kubectl config current-context
+  716  kubectl config get-contexts
+  717  kubectl config use-context kubernetes-admin@kubernetes
+  718  kubectl config current-context
+  719  ls -lR ~/.kube
+  720  ls -lR ~/.kube/config 
+  721  ls -lR .kube .kube/config
+  722  ls -lR ~/.kube ~/.kube/config
+  723  cp ../Documents/OneDrive/7.3statefulset.yml 32.statefulset.yaml
